@@ -1,0 +1,25 @@
+---
+/** Shell snippet with a copy button (the button appears only when JS runs). */
+interface Props {
+  code: string;
+  label?: string;
+}
+const { code, label } = Astro.props;
+const lines = code.split('\n');
+---
+
+<div class="overflow-hidden rounded-xl border border-line bg-surface-2">
+  {label && <div class="border-b border-line px-4 py-2 text-xs font-medium text-muted">{label}</div>}
+  <div class="flex items-start">
+    <pre
+      class="min-w-0 flex-1 overflow-x-auto py-3 pl-4 text-[0.8125rem] leading-6 text-fg-2"><code>{lines.map((line) => <span class="block pr-4"><span class="select-none text-muted">$ </span>{line}</span>)}</code></pre>
+    <button
+      type="button"
+      class="copy-btn m-2 hidden h-8 flex-none items-center gap-1.5 rounded-lg border border-line-strong bg-white px-2.5 text-xs font-medium text-fg-2 transition-colors hover:text-fg"
+      data-copy={code}
+      aria-label={`Copy command: ${code}`}
+    >
+      <span class="copy-label" aria-live="polite">Copy</span>
+    </button>
+  </div>
+</div>

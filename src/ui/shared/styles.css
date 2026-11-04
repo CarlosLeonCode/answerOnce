@@ -1,0 +1,7 @@
+/* Design system entry. Plain CSS with tokens; see styles/*.css. */
+@import './styles/tokens.css';
+@import './styles/base.css';
+@import './styles/components.css';
+@import './styles/app-shell.css';
+@import './styles/import.css';
+@import './styles/panel.css';

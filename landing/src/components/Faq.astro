@@ -1,0 +1,50 @@
+---
+import Icon from './Icon.astro';
+
+const faqs = [
+  {
+    q: 'Is my data sent anywhere?',
+    a: 'No. There is no server and no account. Only the AI provider you pick gets a request, when you ask for AI help. With Ollama, nothing leaves your computer.',
+  },
+  {
+    q: 'Which sites and browsers does it work with?',
+    a: 'Greenhouse, Lever and Ashby, plus many standard forms, in English or Spanish. Browsers: Chrome, Arc and Edge (116 or newer). Brave blocks folder access unless you turn it on in its settings.',
+  },
+  {
+    q: 'Does AnswerOnce submit applications for me?',
+    a: 'No. It fills the form and stops. Consent boxes and the Submit button are always yours.',
+  },
+  {
+    q: 'Can I use it from Claude, Codex, Antigravity, OpenCode or Cursor?',
+    a: 'Yes. Claude Desktop installs it from one file. Claude Code, Codex and Antigravity take one command; OpenCode and Cursor a short config. Then ask “import my CV into AnswerOnce”. Profile changes arrive as proposals you approve, unless you turn on direct writes.',
+  },
+  {
+    q: 'Where exactly is my data?',
+    a: 'In a folder you choose, as plain files: your profile, your applications and your CV. Keep it private and back it up.',
+  },
+] as const;
+---
+
+<section id="faq" class="section-pad relative pt-4 sm:pt-6" aria-labelledby="faq-title">
+  <div class="container-page grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
+    <div data-reveal>
+      <p class="eyebrow">FAQ</p>
+      <h2 id="faq-title" class="display display-md mt-4"><span class="dim">Questions,</span><br />answered plainly.</h2>
+      <p class="lead mt-4">The details are in the README.</p>
+    </div>
+
+    <div class="card divide-y divide-line overflow-hidden" data-reveal>
+      {
+        faqs.map((f, i) => (
+          <details class="group" open={i === 0}>
+            <summary class="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-medium transition-colors hover:bg-surface-2 sm:px-6 [&::-webkit-details-marker]:hidden">
+              {f.q}
+              <Icon name="ChevronDown" class="size-5 flex-none text-muted transition-transform group-open:rotate-180" />
+            </summary>
+            <p class="px-5 pb-5 text-[0.9375rem] leading-relaxed text-muted sm:px-6">{f.a}</p>
+          </details>
+        ))
+      }
+    </div>
+  </div>
+</section>

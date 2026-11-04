@@ -1,0 +1,55 @@
+name: Release
+
+# Push a tag such as v0.2.0 (matching "version" in package.json) to build the extension zip and the
+# Claude Desktop bundle and attach both to a GitHub Release for that tag.
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Build and publish release artifacts
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v7
+
+      - uses: pnpm/action-setup@v6
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+
+      - run: pnpm install --frozen-lockfile
+
+      - name: Check the tag matches package.json
+        run: |
+          version="$(node -p "require('./package.json').version")"
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "Tag ${GITHUB_REF_NAME} does not match package.json version ${version}" >&2
+            exit 1
+          fi
+
+      - run: pnpm typecheck
+      - run: pnpm test
+
+      # pnpm zip runs pnpm build:mcp first, so this produces both artifacts.
+      - name: Build the extension zip and answeronce.mcpb
+        run: pnpm zip
+
+      - name: Publish the GitHub Release
+        uses: softprops/action-gh-release@v3
+        with:
+          generate_release_notes: true
+          fail_on_unmatched_files: true
+          files: |
+            .output/answeronce-*-chrome.zip
+            mcp/dist/answeronce.mcpb

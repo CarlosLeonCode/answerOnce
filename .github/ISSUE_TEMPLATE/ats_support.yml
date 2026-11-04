@@ -1,0 +1,48 @@
+name: ATS support
+description: Request support for a new applicant tracking system, or report fields that fail on a supported one.
+title: "ATS: "
+labels: [ats]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        AnswerOnce has dedicated adapters for Greenhouse, Lever and Ashby, and generic rules for other forms.
+        **Do not paste personal data from your profile.** Link a public form, not one you filled in.
+  - type: input
+    id: ats
+    attributes:
+      label: Applicant tracking system
+      placeholder: Workday, SmartRecruiters, Workable, Personio ...
+    validations:
+      required: true
+  - type: input
+    id: url
+    attributes:
+      label: URL of a sample public job application form
+      description: Any open posting that uses this ATS. Hosted or embedded in a company careers page.
+      placeholder: https://...
+    validations:
+      required: true
+  - type: textarea
+    id: failing-fields
+    attributes:
+      label: Fields that fail
+      description: Which fields are left empty, filled wrongly or not detected (label as shown on the page, and what you expected).
+      placeholder: |
+        - "Legal first name": left empty
+        - "Country" (dropdown): wrong option picked
+    validations:
+      required: true
+  - type: dropdown
+    id: form-type
+    attributes:
+      label: Form type
+      options:
+        - Single page
+        - Multi-step wizard
+        - Embedded in a careers page (iframe)
+        - Not sure
+  - type: input
+    id: version
+    attributes:
+      label: AnswerOnce version or commit

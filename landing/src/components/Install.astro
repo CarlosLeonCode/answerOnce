@@ -1,0 +1,56 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../site';
+import { downloads, installHref } from '../downloads';
+
+// A short preview of the install guide; each item links to its step on /install/.
+const preview = [
+  { step: 1, title: 'Download the zip', icon: 'Download' },
+  { step: 2, title: 'Unzip it somewhere permanent', icon: 'FolderOpen' },
+  { step: 5, title: 'Load unpacked in your browser', icon: 'Puzzle' },
+  { step: 7, title: 'Choose your profile folder', icon: 'FileUser' },
+] as const;
+---
+
+<section id="install" class="section-pad relative" aria-labelledby="install-title">
+  <div class="container-page grid items-center gap-x-14 gap-y-8 lg:grid-cols-[1fr_1fr]">
+    <div class="min-w-0" data-reveal>
+      <p class="eyebrow">Install</p>
+      <h2 id="install-title" class="display display-md mt-4"><span class="dim">Installed and filling</span><br />in about two minutes.</h2>
+      <p class="lead mt-4">Chrome, Arc or Edge. The guide walks you through every click.</p>
+      <div class="mt-6 flex flex-wrap items-center gap-3">
+        <a href={installHref} class="btn btn-dark"><Icon name="Download" />Download and install</a>
+        <a href="/install/" class="btn btn-ghost">Open the install guide<Icon name="ArrowRight" /></a>
+      </div>
+      <p class="mt-4 text-sm text-muted">
+        Version {downloads.version}{downloads.extension.size && ` · ${downloads.extension.size}`} · Chromium 116 or newer
+        {
+          site.repoUrl && (
+            <>
+              {' · '}
+              <a href={site.repoUrl} class="underline decoration-line-strong underline-offset-4 hover:text-fg" rel="noopener">
+                or build it from source
+              </a>
+            </>
+          )
+        }
+      </p>
+    </div>
+
+    <ol class="card min-w-0 divide-y divide-line" data-reveal aria-label="Install guide preview">
+      {
+        preview.map((p) => (
+          <li>
+            <a href={`/install/#step-${p.step}`} class="group flex items-center gap-4 p-4 sm:px-6">
+              <span class="grid size-8 flex-none place-items-center rounded-md bg-[#0b0b0f] text-sm font-medium text-white">{p.step}</span>
+              <span class="min-w-0 flex-1 font-medium">{p.title}</span>
+              <span class="icon-tile size-8 transition-colors group-hover:bg-white">
+                <Icon name={p.icon} class="size-4" />
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ol>
+  </div>
+</section>

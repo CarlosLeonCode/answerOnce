@@ -1,0 +1,36 @@
+---
+import Icon from '../Icon.astro';
+
+interface Props {
+  n: number;
+  title: string;
+  optional?: boolean;
+}
+const { n, title, optional = false } = Astro.props;
+---
+
+<li id={`step-${n}`} class="step card" data-step={n} aria-labelledby={`step-${n}-title`}>
+  <div class="step-text">
+    <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+      <span class="step-num" aria-hidden="true">
+        <span class="step-num-n">{n}</span>
+        <Icon name="Check" class="step-num-check size-4" strokeWidth={3} />
+      </span>
+      <h3 id={`step-${n}-title`} class="text-[1.0625rem] font-medium tracking-tight">
+        <span class="sr-only">Step {n}: </span>{title}
+      </h3>
+      {optional && <span class="step-tag">Optional</span>}
+      <span class="step-tag step-tag-next js-only">Up next</span>
+    </div>
+    <div class="step-body">
+      <slot />
+    </div>
+    <label class="step-done js-only">
+      <input type="checkbox" data-step-done={n} />
+      <span>Done</span><span class="sr-only">: {title}</span>
+    </label>
+  </div>
+  <div class="step-mock" aria-hidden="true">
+    <slot name="mock" />
+  </div>
+</li>

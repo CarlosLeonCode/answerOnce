@@ -1,0 +1,77 @@
+{
+  "name": "answeronce",
+  "description": "Privacy-first Chrome extension that autofills job application forms from plain files in a local folder, with a local MCP server for AI agents.",
+  "private": true,
+  "version": "0.1.0",
+  "license": "AGPL-3.0-only",
+  "author": "CarlosLeonCode (https://github.com/CarlosLeonCode)",
+  "homepage": "https://github.com/CarlosLeonCode/answeronce#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarlosLeonCode/answeronce.git"
+  },
+  "bugs": {
+    "url": "https://github.com/CarlosLeonCode/answeronce/issues"
+  },
+  "keywords": [
+    "chrome-extension",
+    "manifest-v3",
+    "autofill",
+    "job-application",
+    "greenhouse",
+    "lever",
+    "ashby",
+    "privacy",
+    "local-first",
+    "mcp",
+    "wxt",
+    "react"
+  ],
+  "packageManager": "pnpm@10.28.0",
+  "engines": {
+    "node": ">=24"
+  },
+  "type": "module",
+  "bin": {
+    "answeronce-mcp": "mcp/dist/answeronce-mcp.js"
+  },
+  "scripts": {
+    "dev": "pnpm build:mcp && wxt",
+    "build": "pnpm build:mcp && wxt build",
+    "build:mcp": "node mcp/build.ts",
+    "zip": "pnpm build:mcp && wxt zip",
+    "landing:downloads": "pnpm zip && node scripts/copy-downloads.mjs",
+    "landing:build": "pnpm landing:downloads && pnpm --dir landing build",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:e2e": "pnpm build && playwright test",
+    "test:e2e:only": "playwright test",
+    "postinstall": "wxt prepare",
+    "validate:mcpb": "mcpb validate mcp/dist/mcpb/manifest.json",
+    "icons": "node scripts/build-icons.mjs"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.32.2",
+    "lucide-react": "^1.61.0",
+    "mammoth": "^1.13.0",
+    "pdfjs-dist": "^6.4.299",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@anthropic-ai/mcpb": "2.1.2",
+    "@playwright/test": "1.64.1",
+    "@types/jsdom": "^30.0.0",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@wxt-dev/module-react": "^1.2.2",
+    "esbuild": "^0.28.2",
+    "jsdom": "^30.1.3",
+    "typescript": "~5.9.3",
+    "vitest": "^5.0.5",
+    "wxt": "^0.21.4"
+  }
+}

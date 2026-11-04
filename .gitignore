@@ -1,0 +1,28 @@
+node_modules
+.output
+.wxt
+web-ext.config.ts
+*.log
+.DS_Store
+# Never commit a vault by accident
+*.enc
+
+# Playwright end-to-end runs
+test-results
+playwright-report
+e2e/.extension
+
+# answeronce-mcp bundle (pnpm build:mcp)
+mcp/dist
+
+# Local agent tooling and editor/agent config (personal paths)
+.atl/
+.claude/
+
+# Landing site (landing/.gitignore covers these too)
+landing/node_modules
+landing/dist
+landing/.astro
+
+# Install-page downloads, copied from the extension build (pnpm landing:downloads)
+landing/public/downloads/

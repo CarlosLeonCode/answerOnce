@@ -1,0 +1,37 @@
+name: Feature request
+description: Suggest an improvement or a new feature.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        AnswerOnce has no backend, no analytics and never submits a form or answers consent fields.
+        Ideas that need any of those will not fit, but tell us the problem anyway: there may be another way.
+        For a new applicant tracking system, use the **ATS support** template instead.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What are you trying to do, and what gets in the way today?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed solution
+      description: How you imagine it working.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Filling job pages
+        - Profile and CV import
+        - Application tracking
+        - AI providers
+        - AI agents (answeronce-mcp)
+        - Other

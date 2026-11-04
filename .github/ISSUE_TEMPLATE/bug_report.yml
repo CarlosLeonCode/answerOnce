@@ -1,0 +1,82 @@
+name: Bug report
+description: Something in the extension, answeronce-mcp or the landing site does not work as described.
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the report. **Do not paste personal data from your profile** (name, email, phone,
+        address, CV text, saved answers, `profile.json`, `settings.json`) or API keys. Replace them
+        with fictional values like "Jane Doe" / "jane@example.com".
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Personal data
+      options:
+        - label: I removed personal data and API keys from everything below (text, logs, screenshots).
+          required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      options:
+        - Browser extension (filling a page)
+        - Browser extension (profile, CV import, applications, settings)
+        - answeronce-mcp / Claude Desktop extension
+        - Landing site
+        - Build or tooling
+    validations:
+      required: true
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened
+      description: What you did, what you expected and what happened instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      description: For filling issues, link a public job application page (not one with your answers filled in).
+      placeholder: |
+        1. Open https://...
+        2. Click Fill this page
+        3. ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: AnswerOnce version or commit
+      placeholder: 0.1.0 / abc1234
+    validations:
+      required: true
+  - type: input
+    id: browser
+    attributes:
+      label: Browser and OS
+      placeholder: Chrome 131 on macOS 15 / Arc / Brave ...
+    validations:
+      required: true
+  - type: dropdown
+    id: ai
+    attributes:
+      label: AI provider or agent involved
+      options:
+        - None
+        - Ollama
+        - OpenAI
+        - Gemini
+        - Claude (API)
+        - Claude Desktop
+        - Claude Code
+        - Codex
+        - Cursor
+        - Other MCP client
+  - type: textarea
+    id: logs
+    attributes:
+      label: Errors or logs
+      description: Console errors from the side panel, options page or service worker, or `answeronce-mcp status` output. Check them for personal data first.
+      render: text

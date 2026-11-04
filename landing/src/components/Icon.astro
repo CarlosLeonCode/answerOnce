@@ -1,0 +1,25 @@
+---
+import * as icons from 'lucide-static';
+
+type IconName = Exclude<keyof typeof icons, 'default'>;
+
+interface Props {
+  name: IconName;
+  class?: string;
+  /** Accessible label. Omit for decorative icons (the default). */
+  label?: string;
+  strokeWidth?: number;
+}
+
+const { name, class: className = 'size-5', label, strokeWidth } = Astro.props;
+const raw = String(icons[name]);
+const a11y = label ? `role="img" aria-label="${label}"` : 'aria-hidden="true" focusable="false"';
+let svg = raw
+  .replace(/<!--[\s\S]*?-->/g, '')
+  .replace(/\sclass="[^"]*"/, '')
+  .replace('<svg', `<svg class="${className}" ${a11y}`)
+  .trim();
+if (strokeWidth) svg = svg.replace(/stroke-width="[^"]*"/, `stroke-width="${strokeWidth}"`);
+---
+
+<Fragment set:html={svg} />

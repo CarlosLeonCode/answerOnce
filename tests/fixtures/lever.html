@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="en">
+<head><meta charset="utf-8"><title>Globex - Staff Frontend Engineer</title></head>
+<body>
+<div class="content-wrapper posting-page">
+  <div class="posting-headline"><h2>Staff Frontend Engineer</h2></div>
+  <div class="section-wrapper page-full-width">
+    <div class="section">Globex is hiring a Staff Frontend Engineer to lead our design system and React platform.
+      You will partner with design and product to ship accessible, fast interfaces used by millions of people.
+      We value craftsmanship, testing, clean architecture and clear written communication. Hybrid in Barcelona.
+      Benefits include flexible hours, learning budget and private health insurance for you and your family.</div>
+  </div>
+  <form id="application-form" action="https://jobs.lever.co/globex/abc-123/apply" method="POST" enctype="multipart/form-data">
+    <div class="section application-form">
+      <h4>Submit your application</h4>
+      <ul>
+        <li class="application-question resume">
+          <label>
+            <div class="application-label">Resume/CV<span class="required">✱</span></div>
+            <div class="application-field">
+              <input type="file" name="resume" id="resume-upload-input" class="application-file-input">
+            </div>
+          </label>
+        </li>
+        <li class="application-question">
+          <label>
+            <div class="application-label">Full name<span class="required">✱</span></div>
+            <div class="application-field"><input type="text" name="name" required></div>
+          </label>
+        </li>
+        <li class="application-question">
+          <label>
+            <div class="application-label">Email<span class="required">✱</span></div>
+            <div class="application-field"><input type="email" name="email" required></div>
+          </label>
+        </li>
+        <li class="application-question">
+          <label>
+            <div class="application-label">Phone</div>
+            <div class="application-field"><input type="text" name="phone"></div>
+          </label>
+        </li>
+        <li class="application-question">
+          <label>
+            <div class="application-label">Current company</div>
+            <div class="application-field"><input type="text" name="org"></div>
+          </label>
+        </li>
+      </ul>
+    </div>
+    <div class="section application-form">
+      <h4>Links</h4>
+      <ul>
+        <li class="application-question">
+          <label><div class="application-label">LinkedIn URL</div>
+            <div class="application-field"><input type="text" name="urls[LinkedIn]"></div></label>
+        </li>
+        <li class="application-question">
+          <label><div class="application-label">GitHub URL</div>
+            <div class="application-field"><input type="text" name="urls[GitHub]"></div></label>
+        </li>
+        <li class="application-question">
+          <label><div class="application-label">Portfolio URL</div>
+            <div class="application-field"><input type="text" name="urls[Portfolio]"></div></label>
+        </li>
+      </ul>
+    </div>
+    <div class="section application-form">
+      <ul>
+        <li class="application-question custom-question">
+          <div class="application-label full-width">¿Estás dispuesto a reubicarte en Barcelona?<span class="required">✱</span></div>
+          <div class="application-field full-width">
+            <ul data-qa="multiple-choice">
+              <li><label><input type="radio" name="cards[f1][field0]" value="Sí"><span class="application-answer-alternative">Sí</span></label></li>
+              <li><label><input type="radio" name="cards[f1][field0]" value="No"><span class="application-answer-alternative">No</span></label></li>
+            </ul>
+          </div>
+        </li>
+        <li class="application-question custom-question">
+          <div class="application-label full-width">Pretensión salarial (bruto anual)</div>
+          <div class="application-field full-width"><input type="text" name="cards[f1][field1]"></div>
+        </li>
+        <li class="application-question custom-question">
+          <div class="application-label full-width">Additional information</div>
+          <div class="application-field full-width">
+            <textarea name="comments" placeholder="Add a cover letter or anything else you want to share."></textarea>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <button type="submit" class="template-btn-submit">Submit application</button>
+  </form>
+</div>
+</body>
+</html>

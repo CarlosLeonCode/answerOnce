@@ -1,0 +1,43 @@
+---
+import Brand from './Brand.astro';
+import { site } from '../site';
+
+const year = new Date().getFullYear();
+const at = (hash: string) => (Astro.url.pathname === '/' ? hash : `/${hash}`);
+const links = [
+  { href: at('#how-it-works'), label: 'How it works' },
+  { href: at('#privacy'), label: 'Privacy' },
+  { href: '/install/', label: 'Install guide' },
+  { href: at('#faq'), label: 'FAQ' },
+  { href: at('#tools'), label: 'Tools' },
+  ...(site.repoUrl ? [{ href: site.repoUrl, label: 'Source' }] : []),
+];
+---
+
+<footer class="border-t border-line bg-white/60 py-10">
+  <div class="container-page flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
+    <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
+      <Brand />
+      <p class="text-[0.9375rem] text-muted">Spend your time on the job, not the form.</p>
+    </div>
+    <nav aria-label="Footer">
+      <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} class="text-muted transition-colors hover:text-fg">{l.label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+  <div class="container-page mt-8 flex flex-col gap-2 border-t border-line pt-6 text-xs text-muted sm:flex-row sm:justify-between">
+    <p>
+      © {year} AnswerOnce. Open source under the{' '}
+      {site.repoUrl ? <a href={`${site.repoUrl}/blob/main/LICENSE`} class="underline hover:text-fg" rel="noopener">AGPL-3.0</a> : 'AGPL-3.0'}.
+      Screenshots use fictional data.
+    </p>
+    <p>Not affiliated with any applicant tracking system or AI provider. Product names belong to their owners.</p>
+  </div>
+</footer>

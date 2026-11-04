@@ -1,0 +1,57 @@
+%PDF-1.4
+%‚„œ”
+1 0 obj
+<< /Type /Catalog /Pages 2 0 R >>
+endobj
+2 0 obj
+<< /Type /Pages /Kids [3 0 R] /Count 1 >>
+endobj
+3 0 obj
+<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 4 0 R /F2 5 0 R >> >> /Contents 6 0 R >>
+endobj
+4 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>
+endobj
+5 0 obj
+<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica-Bold /Encoding /WinAnsiEncoding >>
+endobj
+6 0 obj
+<< /Length 1325 >>
+stream
+BT /F2 20 Tf 56 790 Td (Jordan Rivera) Tj ET
+BT /F1 10.5 Tf 56 762 Td (Senior Frontend Engineer) Tj ET
+BT /F1 10.5 Tf 56 743.5 Td (Lisbon, Portugal | jordan.rivera@example.com | +351 912 345 678) Tj ET
+BT /F1 10.5 Tf 56 725 Td (linkedin.com/in/jordan-rivera-dev | github.com/jrivera-dev | jordanrivera.dev) Tj ET
+BT /F2 13 Tf 56 696.5 Td (Summary) Tj ET
+BT /F1 10.5 Tf 56 675.5 Td (Frontend engineer with 8 years of experience building accessible, fast web applications with TypeScript and React.) Tj ET
+BT /F2 13 Tf 56 647 Td (Experience) Tj ET
+BT /F1 10.5 Tf 56 626 Td (Senior Frontend Engineer - Lumen Analytics, Lisbon) Tj ET
+BT /F1 10.5 Tf 56 607.5 Td (Mar 2021 - Present) Tj ET
+BT /F1 10.5 Tf 56 589 Td (Led the migration of the analytics dashboard to React 18 and a design system used by 6 teams.) Tj ET
+BT /F1 10.5 Tf 56 570.5 Td (Frontend Developer - Northwind Labs, Porto) Tj ET
+BT /F1 10.5 Tf 56 552 Td (Jun 2017 - Feb 2021) Tj ET
+BT /F1 10.5 Tf 56 533.5 Td (Built customer-facing booking flows and improved Core Web Vitals by 40%.) Tj ET
+BT /F2 13 Tf 56 505 Td (Education) Tj ET
+BT /F1 10.5 Tf 56 484 Td (BSc Computer Science - Universidade de Lisboa, 2013 - 2017) Tj ET
+BT /F2 13 Tf 56 455.5 Td (Skills) Tj ET
+BT /F1 10.5 Tf 56 434.5 Td (TypeScript, React, Node.js, GraphQL, Accessibility, Testing Library) Tj ET
+endstream
+endobj
+7 0 obj
+<< /Title (Jordan Rivera CV) /Producer (test fixtures) >>
+endobj
+xref
+0 8
+0000000000 65535 f 
+0000000015 00000 n 
+0000000064 00000 n 
+0000000121 00000 n 
+0000000257 00000 n 
+0000000354 00000 n 
+0000000456 00000 n 
+0000001833 00000 n 
+trailer
+<< /Size 8 /Root 1 0 R /Info 7 0 R >>
+startxref
+1906
+%%EOF

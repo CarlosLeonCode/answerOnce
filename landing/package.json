@@ -1,0 +1,35 @@
+{
+  "name": "answeronce-landing",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Marketing landing page for the AnswerOnce browser extension.",
+  "license": "AGPL-3.0-only",
+  "author": "CarlosLeonCode (https://github.com/CarlosLeonCode)",
+  "homepage": "https://github.com/CarlosLeonCode/answeronce#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CarlosLeonCode/answeronce.git",
+    "directory": "landing"
+  },
+  "bugs": {
+    "url": "https://github.com/CarlosLeonCode/answeronce/issues"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview"
+  },
+  "dependencies": {
+    "@fontsource-variable/inter": "^5.3.0",
+    "@tailwindcss/vite": "^4.3.3",
+    "astro": "^7.4.4",
+    "gsap": "3.15.0",
+    "lucide-static": "^1.66.0",
+    "tailwindcss": "^4.3.3",
+    "three": "0.187.0"
+  },
+  "devDependencies": {
+    "@types/three": "0.187.0"
+  }
+}

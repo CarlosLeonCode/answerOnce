@@ -1,0 +1,14 @@
+---
+/**
+ * Text shown only for some browsers, e.g. <For b="edge">…</For> or <For b="chrome brave arc">…</For>.
+ * CSS hides it unless <html data-browser> matches; with JavaScript off the Chrome text shows.
+ */
+interface Props {
+  b: string;
+  block?: boolean;
+}
+const { b, block = false } = Astro.props;
+const Tag = block ? 'div' : 'span';
+---
+
+<Tag data-for={b}><slot /></Tag>

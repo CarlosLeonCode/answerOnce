@@ -1,0 +1,56 @@
+---
+/**
+ * Decorative "form skeleton": faint application-form columns (label bars + input outlines) at the
+ * left and right edges, fading toward the center. Straight lines and rectangles only.
+ */
+interface Props {
+  class?: string;
+}
+const { class: className } = Astro.props;
+
+let seed = 11;
+const rand = () => {
+  seed = (seed * 16807) % 2147483647;
+  return (seed - 1) / 2147483646;
+};
+
+type Col = { x: number; w: number; y0: number; rows: number; o: number };
+const cols: Col[] = [
+  { x: 48, w: 300, y0: 70, rows: 13, o: 1 },
+  { x: 388, w: 210, y0: 150, rows: 11, o: 0.6 },
+  { x: 1252, w: 300, y0: 40, rows: 13, o: 1 },
+  { x: 1002, w: 210, y0: 120, rows: 11, o: 0.6 },
+];
+
+const rows = cols.flatMap((c) =>
+  Array.from({ length: c.rows }, (_, i) => {
+    const y = c.y0 + i * 72;
+    const half = rand() > 0.62;
+    return {
+      o: c.o,
+      label: { x: c.x, y, w: 50 + Math.round(rand() * 90) },
+      inputs: half
+        ? [
+            { x: c.x, y: y + 16, w: c.w / 2 - 6 },
+            { x: c.x + c.w / 2 + 6, y: y + 16, w: c.w / 2 - 6 },
+          ]
+        : [{ x: c.x, y: y + 16, w: c.w }],
+    };
+  }),
+);
+---
+
+<div class:list={['form-skeleton', className]} aria-hidden="true">
+  <svg viewBox="0 0 1600 1000" preserveAspectRatio="xMidYMid slice" xmlns="http://www.w3.org/2000/svg">
+    {
+      rows.map((r) => (
+        <g opacity={r.o}>
+          <rect x={r.label.x} y={r.label.y} width={r.label.w} height="7" rx="2" fill="#dcdce4" />
+          {r.inputs.map((i) => (
+            <rect x={i.x} y={i.y} width={i.w} height="34" rx="5" fill="#ffffff" stroke="#dedee6" stroke-width="1" />
+          ))}
+        </g>
+      ))
+    }
+  </svg>
+</div>

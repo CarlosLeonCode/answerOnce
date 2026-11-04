@@ -1,0 +1,58 @@
+---
+import Icon from './Icon.astro';
+---
+
+<section id="privacy" class="section-pad relative" aria-labelledby="privacy-title">
+  <div class="container-page">
+    <div class="mx-auto max-w-3xl text-center" data-reveal>
+      <p class="eyebrow justify-center"><Icon name="ShieldCheck" class="size-4" />Privacy model</p>
+      <h2 id="privacy-title" class="display display-lg mt-4">
+        <span class="dim">Your data stays</span> on your <span class="glow-u">computer</span>.
+      </h2>
+      <p class="lead mx-auto mt-5 max-w-[38rem]">No account, no server, no tracking. AI runs only when you ask.</p>
+    </div>
+
+    <ul class="mt-12 grid gap-4 md:grid-cols-3" data-reveal>
+      <li class="card flex flex-col p-6">
+        <div class="flex items-center gap-3">
+          <span class="icon-tile"><Icon name="HardDrive" /></span>
+          <div>
+            <p class="text-[0.6875rem] font-medium tracking-[0.14em] text-muted uppercase">On your disk</p>
+            <h3 class="font-medium">Plain files you own</h3>
+          </div>
+        </div>
+        <p class="mt-4 text-sm leading-relaxed text-fg-2">Your profile and CV live in a folder you choose, as files you can open and back up.</p>
+      </li>
+
+      <li class="card flex flex-col p-6">
+        <div class="flex items-center gap-3">
+          <span class="icon-tile"><Icon name="AppWindow" /></span>
+          <div>
+            <p class="text-[0.6875rem] font-medium tracking-[0.14em] text-muted uppercase">In the browser</p>
+            <h3 class="font-medium">Nothing personal at rest</h3>
+          </div>
+        </div>
+        <p class="mt-4 text-sm leading-relaxed text-fg-2">Your profile is cleared from the browser when you close it. Job pages only get the fields they ask for.</p>
+      </li>
+
+      <li class="card flex flex-col p-6">
+        <div class="flex items-center gap-3">
+          <span class="icon-tile"><Icon name="Sparkles" /></span>
+          <div>
+            <p class="text-[0.6875rem] font-medium tracking-[0.14em] text-muted uppercase">Optional AI</p>
+            <h3 class="font-medium">What a provider sees</h3>
+          </div>
+        </div>
+        <p class="mt-4 text-sm leading-relaxed text-fg-2">
+          Claude, OpenAI or Gemini with your own key. Drafting sends a short summary; CV import sends your CV after you confirm.{' '}
+          <span class="font-medium text-success">Or Ollama, fully on your computer.</span>
+        </p>
+      </li>
+    </ul>
+
+    <p class="mx-auto mt-6 max-w-4xl text-center text-sm leading-relaxed text-muted" data-reveal>
+      <Icon name="KeySquare" class="mr-1.5 inline size-4 align-[-3px] text-accent" />
+      Four browser permissions. No access to all sites.
+    </p>
+  </div>
+</section>

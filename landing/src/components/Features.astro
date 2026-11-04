@@ -1,0 +1,113 @@
+---
+import Icon from './Icon.astro';
+
+// Illustrative sample data for the mockups below (fictional companies).
+const applications = [
+  { role: 'Frontend Engineer', company: 'Fieldstone', status: 'Interview', date: 'Oct 29', tone: 'accent' },
+  { role: 'Senior React Developer', company: 'Northwind Labs', status: 'Applied', date: 'Oct 28', tone: 'success' },
+  { role: 'Full-stack Engineer', company: 'Brightline', status: 'Applied', date: 'Oct 27', tone: 'success' },
+  { role: 'Software Engineer', company: 'Kestrel Health', status: 'Rejected', date: 'Oct 21', tone: 'muted' },
+] as const;
+
+const toneClass = {
+  accent: 'border-accent/25 bg-accent/10 text-accent',
+  success: 'border-success/25 bg-success/10 text-success',
+  muted: 'border-line bg-surface-2 text-muted',
+} as const;
+
+const agents = ['Claude Desktop', 'Claude Code', 'Codex', 'Antigravity', 'OpenCode', 'Cursor'];
+---
+
+<section id="features" class="section-pad relative" aria-labelledby="features-title">
+  <div class="container-page">
+    <div class="mx-auto max-w-3xl text-center" data-reveal>
+      <p class="eyebrow justify-center">Beyond the form</p>
+      <h2 id="features-title" class="display display-lg mt-4">
+        <span class="dim">Remember every application.</span><br />Manage it from your agent.
+      </h2>
+    </div>
+
+    <div class="mt-12 grid gap-4 lg:grid-cols-2" data-reveal>
+      <article class="card flex flex-col overflow-hidden">
+        <div class="border-b border-line bg-surface-2 p-5 sm:p-6" aria-hidden="true">
+          <div class="rounded-xl border border-line bg-surface shadow-sm">
+            <div class="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
+              <span class="text-sm font-medium">Applications</span>
+              <span class="text-xs text-muted">3 applied this week</span>
+            </div>
+            <ul class="divide-y divide-line">
+              {
+                applications.map((a) => (
+                  <li class="flex items-center justify-between gap-3 px-4 py-2.5">
+                    <span class="min-w-0">
+                      <span class="block truncate text-sm font-medium">{a.role}</span>
+                      <span class="block truncate text-xs text-muted">{a.company}</span>
+                    </span>
+                    <span class="flex flex-none items-center gap-3">
+                      <span class:list={['rounded-full border px-2 py-0.5 text-[0.6875rem] font-medium', toneClass[a.tone]]}>{a.status}</span>
+                      <span class="hidden w-12 text-right text-xs text-muted sm:block">{a.date}</span>
+                    </span>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+          <p class="mt-3 flex items-center gap-2 rounded-lg border border-warning/30 bg-warning/10 px-3 py-2 text-xs text-fg-2">
+            <Icon name="History" class="size-4 flex-none text-warning" />
+            You already applied here on Oct 3.
+          </p>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-3">
+            <span class="icon-tile"><Icon name="ListChecks" /></span>
+            <h3 class="text-[1.0625rem] font-medium tracking-tight">Track every application</h3>
+          </div>
+          <p class="mt-3 text-sm leading-relaxed text-fg-2">
+            Every application and what you answered, with its status. AnswerOnce reminds you if you already applied to that job.
+          </p>
+        </div>
+      </article>
+
+      <article class="card flex flex-col overflow-hidden">
+        <div class="border-b border-line bg-surface-2 p-5 sm:p-6" aria-hidden="true">
+          <div class="overflow-hidden rounded-xl border border-line bg-white shadow-sm">
+            <div class="flex items-center gap-2 border-b border-line bg-[#f7f6f2] px-3 py-2">
+              <span class="flex gap-1"><span class="size-2 rounded-full bg-[#e5e5ea]"></span><span class="size-2 rounded-full bg-[#e5e5ea]"></span><span class="size-2 rounded-full bg-[#e5e5ea]"></span></span>
+              <span class="text-xs font-semibold text-fg">Claude</span>
+              <span class="ml-auto flex items-center gap-1.5 rounded-full border border-success/30 bg-success/10 px-2 py-0.5 text-[0.6875rem] font-medium text-success">
+                <Icon name="Plug" class="size-3" />answeronce connected
+              </span>
+            </div>
+            <div class="space-y-2.5 p-3.5 text-[0.75rem] leading-relaxed">
+              <p class="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-[#efeee9] px-3 py-1.5 text-fg">Import my CV from ~/Documents/cv.pdf into AnswerOnce</p>
+              <p class="flex w-fit items-center gap-1.5 rounded-md border border-line px-2 py-0.5 font-mono text-[0.6875rem] text-muted"><Icon name="Wrench" class="size-3" />answeronce · import_cv_file</p>
+              <p class="max-w-[92%] text-fg-2">Done. I proposed 14 updates to your profile: experience, skills and links. Review them in AnswerOnce.</p>
+              <p class="ml-auto w-fit max-w-[85%] rounded-2xl rounded-br-md bg-[#efeee9] px-3 py-1.5 text-fg">Which companies did I apply to this week?</p>
+              <p class="flex w-fit items-center gap-1.5 rounded-md border border-line px-2 py-0.5 font-mono text-[0.6875rem] text-muted"><Icon name="Wrench" class="size-3" />answeronce · list_applications</p>
+              <p class="max-w-[92%] text-fg-2">Fieldstone (now Interview), Northwind Labs and Brightline.</p>
+            </div>
+          </div>
+          <div class="mt-3 flex items-center justify-between gap-3 rounded-lg border border-line bg-surface px-3 py-2 text-xs">
+            <span class="flex items-center gap-2 text-fg-2"><Icon name="Inbox" class="size-4 text-accent" />14 changes proposed by Claude</span>
+            <span class="flex gap-1.5">
+              <span class="rounded-md border border-line px-2 py-0.5 text-muted">Reject</span>
+              <span class="rounded-md bg-[#0b0b0f] px-2 py-0.5 text-white">Review</span>
+            </span>
+          </div>
+        </div>
+        <div class="p-6">
+          <div class="flex items-center gap-3">
+            <span class="icon-tile"><Icon name="Bot" /></span>
+            <h3 class="text-[1.0625rem] font-medium tracking-tight">Works with your AI agent</h3>
+          </div>
+          <p class="mt-3 text-sm leading-relaxed text-fg-2">
+            Add it to Claude Desktop from one file. Ask it to import your CV or list your applications. Profile changes wait for your approval.
+          </p>
+          <ul class="mt-4 flex flex-wrap gap-2" aria-label="Compatible agents">
+            {agents.map((a) => <li class="rounded-full border border-line px-2.5 py-1 text-xs text-fg-2">{a}</li>)}
+          </ul>
+        </div>
+      </article>
+    </div>
+  </div>
+</section>

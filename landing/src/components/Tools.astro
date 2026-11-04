@@ -1,0 +1,37 @@
+---
+import { Image } from 'astro:assets';
+import Icon from './Icon.astro';
+import { tools } from '../tools';
+---
+
+<section id="tools" class="relative pb-16 sm:pb-20" aria-labelledby="tools-title">
+  <div class="container-page">
+    <div class="flex items-baseline justify-between gap-4 border-t border-line pt-10" data-reveal>
+      <h2 id="tools-title" class="text-sm font-medium tracking-[0.14em] text-muted uppercase">More tools by carlosleoncode</h2>
+    </div>
+
+    <ul class="mt-5 grid gap-2 sm:grid-cols-2 lg:grid-cols-5" data-reveal>
+      {
+        tools.map((p) => (
+          <li>
+            <a
+              href={p.href}
+              target="_blank"
+              rel="noopener"
+              class="group flex items-center gap-3 rounded-xl border border-transparent p-2.5 transition-colors hover:border-line hover:bg-white"
+            >
+              <Image src={p.icon} alt="" width={40} height={40} class="size-10 flex-none rounded-[0.6rem] border border-line" />
+              <span class="min-w-0">
+                <span class="flex items-center gap-1 text-sm font-medium">
+                  {p.name}
+                  <Icon name="ArrowUpRight" class="size-3.5 text-muted opacity-0 transition-opacity group-hover:opacity-100" />
+                </span>
+                <span class="block text-xs leading-snug text-muted">{p.text}</span>
+              </span>
+            </a>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>

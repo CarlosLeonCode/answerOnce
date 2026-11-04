@@ -1,0 +1,115 @@
+---
+import Icon from './Icon.astro';
+import { installHref } from '../downloads';
+import Shot from './Shot.astro';
+import FormSkeleton from './FormSkeleton.astro';
+import demo from '../assets/shots/overlay-demo-light.png';
+import claude from '../assets/agents/claude.svg?raw';
+import codex from '../assets/agents/codex.svg?raw';
+import antigravity from '../assets/agents/antigravity.svg?raw';
+import opencode from '../assets/agents/opencode.svg?raw';
+import cursor from '../assets/agents/cursor.svg?raw';
+
+// Logos from @lobehub/icons (MIT). In 3D mode they rise from behind the laptop and settle around it:
+// x/y as fractions of the half-viewport from the center, r: tilt in degrees.
+const agents = [
+  { name: 'Claude', svg: claude, x: -0.44, y: -0.58, r: -10 },
+  { name: 'Codex', svg: codex, x: 0.43, y: -0.42, r: 8 },
+  { name: 'Antigravity', svg: antigravity, x: -0.5, y: 0.1, r: 6 },
+  { name: 'OpenCode', svg: opencode, x: 0.45, y: 0.2, r: -6 },
+  { name: 'Cursor', svg: cursor, x: -0.36, y: 0.5, r: 4 },
+].map((a) => ({ ...a, svg: a.svg.replace(/<title>.*?<\/title>/, '').replace(/ (height|width|style)="[^"]*"/g, '') }));
+
+const captions = [
+  { tag: 'Filled for you', text: 'Known fields and your CV, in one click. Consent boxes stay for you.' },
+  { tag: 'You press Submit', text: 'AnswerOnce never submits. You review and send.' },
+] as const;
+---
+
+<section id="top" class="relative isolate" aria-labelledby="hero-title">
+  <div class="hero-stage" data-hero-stage>
+    <div class="hero-sticky">
+      <FormSkeleton />
+      <canvas class="hero-canvas" data-hero-canvas aria-hidden="true"></canvas>
+
+      <div class="hero-copy container-page pt-28 text-center sm:pt-36" data-hero-copy>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          <a
+            href="https://www.carlosleoncode.com"
+            rel="noopener"
+            class="group inline-flex items-center gap-2.5 rounded-full border border-accent/25 bg-white py-1 pr-3.5 pl-1 shadow-[0_8px_24px_-10px_rgb(79_70_229/0.45)] transition-colors hover:border-accent/60"
+          >
+            <span class="grid size-7 flex-none place-items-center rounded-full bg-gradient-to-br from-[#7c72ff] to-[#3730a3] text-[0.6875rem] font-semibold text-white" aria-hidden="true">CL</span>
+            <span class="text-[0.8125rem] text-muted">Created by <strong class="font-semibold text-fg">carlosleoncode</strong></span>
+            <Icon name="ArrowUpRight" class="size-4 flex-none text-fg-2 transition-colors group-hover:text-accent" />
+          </a>
+          <p class="pill">
+            <Icon name="Sparkles" class="size-3.5 text-accent" />
+            AI-powered · works with Claude
+          </p>
+        </div>
+        <h1 id="hero-title" class="display display-xl mx-auto mt-6 max-w-[60rem]">
+          <span class="dim">Answer once.</span>{' '}Apply <span class="glow-u">everywhere</span>.
+        </h1>
+        <p class="lead mx-auto mt-5 max-w-[38rem] sm:text-lg">
+          Fill job applications in one click. AI imports your CV and helps with the hard answers. Your profile lives on your disk.
+        </p>
+        <div class="mt-7 flex flex-wrap items-center justify-center gap-3">
+          <a href={installHref} class="btn btn-dark">Install AnswerOnce</a>
+          <a href="#how-it-works" class="btn btn-ghost">See how it works<Icon name="ArrowDown" /></a>
+        </div>
+        <p class="mt-6 text-xs font-medium tracking-[0.14em] text-muted uppercase" data-hero-agents-label>Works with</p>
+      </div>
+
+      <ul class="hero-agents container-page" aria-label="Works with these AI agents" data-hero-agents>
+        {
+          agents.map((a) => (
+            <li class="agent" data-agent data-x={a.x} data-y={a.y} data-r={a.r}>
+              <span class="agent-logo" aria-hidden="true" data-agent-logo set:html={a.svg} />
+              <span data-agent-name>{a.name}</span>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="hero-static container-page pt-14 pb-6 sm:pt-16">
+        <figure class="mx-auto max-w-5xl" aria-label="AnswerOnce filling an application form">
+          <div class="relative mx-auto w-[94%] rounded-t-[1.25rem] bg-[#16161a] p-[1.4%] pb-[2.2%] border border-black/10 shadow-[0_30px_60px_-30px_rgb(17_17_40/0.45)]">
+            <div class="overflow-hidden rounded-[0.5rem]">
+              <Shot
+                src={demo}
+                loading="eager"
+                class="w-full"
+                sizes="(min-width: 1088px) 960px, calc(94vw - 2rem)"
+                alt="A job application form for a Senior Frontend Engineer role. The AnswerOnce panel floats on the right after clicking Fill this page: 9 fields filled and outlined in green, and one open question, “Why do you want to work at Fieldstone?”, waiting for input."
+              />
+            </div>
+          </div>
+          <div class="relative mx-auto h-3 w-full rounded-b-[1.25rem] bg-gradient-to-b from-[#e4e5e9] to-[#b9bbc2] shadow-[0_18px_30px_-14px_rgb(17_17_40/0.4)] sm:h-4" aria-hidden="true">
+            <div class="absolute top-0 left-1/2 h-1.5 w-[14%] -translate-x-1/2 rounded-b-lg bg-[#cfd1d6]"></div>
+          </div>
+          <figcaption class="mt-4 text-center text-sm text-muted">AnswerOnce’s in-page panel on an application form (fictional company and data).</figcaption>
+        </figure>
+      </div>
+
+      <ol class="hero-captions container-page mt-8 pb-12" aria-label="What happens when you click Fill this page">
+        {
+          captions.map((c, i) => (
+            <li class="hero-caption px-5 py-4 text-left" data-hero-caption>
+              <p class="flex items-center gap-2 text-xs font-medium tracking-[0.14em] text-accent uppercase">
+                <span class="text-muted">0{i + 1}</span>
+                {c.tag}
+              </p>
+              <p class="mt-1.5 text-[0.9375rem] leading-relaxed text-fg-2">{c.text}</p>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="hero-3d-only absolute bottom-8 left-[max(1.5rem,calc(50%-36rem))] text-center" data-scroll-hint aria-hidden="true">
+        <span class="block text-[0.6875rem] tracking-[0.3em] text-muted uppercase">Scroll</span>
+        <span class="mx-auto mt-2 block h-8 w-px bg-gradient-to-b from-black/40 to-transparent"></span>
+      </div>
+    </div>
+  </div>
+</section>
