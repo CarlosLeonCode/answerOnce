@@ -1,36 +1,17 @@
 ---
 import Icon from './Icon.astro';
+import { toLocale, useStrings } from '../i18n';
 
-const faqs = [
-  {
-    q: 'Is my data sent anywhere?',
-    a: 'No. There is no server and no account. Only the AI provider you pick gets a request, when you ask for AI help. With Ollama, nothing leaves your computer.',
-  },
-  {
-    q: 'Which sites and browsers does it work with?',
-    a: 'Greenhouse, Lever and Ashby, plus many standard forms, in English or Spanish. Browsers: Chrome, Arc and Edge (116 or newer). Brave blocks folder access unless you turn it on in its settings.',
-  },
-  {
-    q: 'Does AnswerOnce submit applications for me?',
-    a: 'No. It fills the form and stops. Consent boxes and the Submit button are always yours.',
-  },
-  {
-    q: 'Can I use it from Claude, Codex, Antigravity, OpenCode or Cursor?',
-    a: 'Yes. Claude Desktop installs it from one file. Claude Code, Codex and Antigravity take one command; OpenCode and Cursor a short config. Then ask “import my CV into AnswerOnce”. Profile changes arrive as proposals you approve, unless you turn on direct writes.',
-  },
-  {
-    q: 'Where exactly is my data?',
-    a: 'In a folder you choose, as plain files: your profile, your applications and your CV. Keep it private and back it up.',
-  },
-] as const;
+const t = useStrings(toLocale(Astro.currentLocale)).faq;
+const faqs = t.items;
 ---
 
 <section id="faq" class="section-pad relative pt-4 sm:pt-6" aria-labelledby="faq-title">
   <div class="container-page grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
     <div data-reveal>
-      <p class="eyebrow">FAQ</p>
-      <h2 id="faq-title" class="display display-md mt-4"><span class="dim">Questions,</span><br />answered plainly.</h2>
-      <p class="lead mt-4">The details are in the README.</p>
+      <p class="eyebrow">{t.eyebrow}</p>
+      <h2 id="faq-title" class="display display-md mt-4"><span class="dim">{t.titleDim}</span><br />{t.title}</h2>
+      <p class="lead mt-4">{t.lead}</p>
     </div>
 
     <div class="card divide-y divide-line overflow-hidden" data-reveal>

@@ -33,10 +33,14 @@ The "Source" links in the nav, install section and footer come from `repoUrl` in
 
 ```
 src/
-  pages/index.astro     Page composition
-  pages/install.astro   Step-by-step install guide (auto-downloads with ?download=1)
-  layouts/Base.astro    <head>, SEO/OG tags, motion-mode flags (set before first paint)
-  components/           One component per section, plus Icon, Shot, CodeBlock, Brand, FormSkeleton
+  pages/                Thin routes: index.astro and install.astro (English), es/ (Spanish)
+  components/pages/     HomePage.astro (page composition), InstallPage.astro (step-by-step install
+                        guide, auto-downloads with ?download=1); both read the locale from the URL
+  i18n/                 en.ts (source of the `Strings` shape), es.ts, helpers (useStrings, localize)
+  layouts/Base.astro    <head>, SEO/OG/hreflang tags, motion-mode flags (set before first paint)
+  components/           One component per section, plus Nav (menu panel, language switch), Icon, Shot,
+                        CodeBlock, Brand, FormSkeleton, Rich (formats **bold**/`code` in strings)
+  scripts/nav.ts        Menu panel, Tools dropdown, language links
   scripts/app.ts        Entry: reveal-on-scroll, copy buttons; lazy-loads motion.ts
   scripts/motion.ts     GSAP ScrollTrigger timelines (hero, vault); lazy-loads hero3d.ts
   scripts/hero3d.ts     Procedural three.js laptop (no external models)

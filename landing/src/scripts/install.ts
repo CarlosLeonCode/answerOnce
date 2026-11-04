@@ -6,6 +6,15 @@
  */
 import { browsers, GUIDE_STORAGE_KEY, isBrowserId, type BrowserId } from '../browsers';
 
+/** Localized runtime strings, written into the page by InstallPage.astro. */
+type GuideStrings = Record<
+  'detected' | 'chosen' | 'count' | 'countLong' | 'announce' | 'allDone' | 'cleared' | 'mobile' | 'notChromium' | 'copyAddress',
+  string
+>;
+const strings = JSON.parse(document.querySelector('[data-guide-strings]')?.textContent || '{}') as GuideStrings;
+const say = (key: keyof GuideStrings, vars: Record<string, string | number> = {}) =>
+  (strings[key] ?? '').replace(/\{(\w+)\}/g, (all, k: string) => (k in vars ? String(vars[k]) : all));
+
 type Saved = { done: number[]; browser?: BrowserId };
 
 function load(): Saved {
@@ -45,9 +54,9 @@ function setBrowser(id: BrowserId, auto: boolean) {
   const b = browsers.find((x) => x.id === id)!;
   if (urlCopy) {
     urlCopy.dataset.copy = b.extensionsUrl;
-    urlCopy.setAttribute('aria-label', `Copy address: ${b.extensionsUrl}`);
+    urlCopy.setAttribute('aria-label', say('copyAddress', { url: b.extensionsUrl }));
   }
-  if (hint) hint.textContent = auto ? `Detected ${b.name}. The steps below use its wording.` : `The steps below use ${b.name}’s wording.`;
+  if (hint) hint.textContent = say(auto ? 'detected' : 'chosen', { name: b.name });
 }
 
 const initial = isBrowserId(root.dataset.browser) ? root.dataset.browser : 'chrome';
@@ -81,9 +90,7 @@ const uaData = (navigator as Navigator & { userAgentData?: { mobile?: boolean } 
 const mobile = uaData?.mobile ?? /Android|iPhone|iPad|iPod|Mobile/.test(ua);
 const chromium = !!uaData || (/Chrome\/|Chromium\//.test(ua) && !/Firefox\/|FxiOS|CriOS|EdgiOS/.test(ua));
 if (envNote && envText && (mobile || !chromium)) {
-  envText.textContent = mobile
-    ? 'Browser extensions need a computer. Open this page on your desktop in Chrome, Arc or Edge to install AnswerOnce.'
-    : 'AnswerOnce runs in Chrome, Arc and Edge (version 116 or newer). Open this page in one of them to install it.';
+  envText.textContent = say(mobile ? 'mobile' : 'notChromium');
   envNote.hidden = false;
 }
 
@@ -115,10 +122,10 @@ function render() {
   const count = steps.filter((li) => done.has(Number(li.dataset.step))).length;
   if (bar) {
     bar.setAttribute('aria-valuenow', String(count));
-    bar.setAttribute('aria-valuetext', `${count} of ${total} steps done`);
+    bar.setAttribute('aria-valuetext', say('countLong', { n: count, total }));
   }
   if (fill) fill.style.transform = `scaleX(${count / total})`;
-  if (text) text.textContent = `${count} of ${total}`;
+  if (text) text.textContent = say('count', { n: count, total });
   finish?.toggleAttribute('data-complete', count === total);
 }
 
@@ -133,7 +140,7 @@ boxes.forEach((box, i) => {
     render();
     if (announce) {
       const count = state.done.length;
-      announce.textContent = count === total ? 'All steps done.' : `${count} of ${total} steps done.`;
+      announce.textContent = count === total ? say('allDone') : say('announce', { n: count, total });
     }
   });
 });
@@ -142,7 +149,7 @@ document.querySelector('[data-reset]')?.addEventListener('click', () => {
   state.done = [];
   save(state);
   render();
-  if (announce) announce.textContent = 'Progress cleared. Back to step 1.';
+  if (announce) announce.textContent = say('cleared');
 });
 
 render();

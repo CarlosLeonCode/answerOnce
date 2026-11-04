@@ -1,5 +1,8 @@
 ---
 import Icon from './Icon.astro';
+import { toLocale, useStrings } from '../i18n';
+
+const t = useStrings(toLocale(Astro.currentLocale)).features;
 
 // Illustrative sample data for the mockups below (fictional companies).
 const applications = [
@@ -21,9 +24,9 @@ const agents = ['Claude Desktop', 'Claude Code', 'Codex', 'Antigravity', 'OpenCo
 <section id="features" class="section-pad relative" aria-labelledby="features-title">
   <div class="container-page">
     <div class="mx-auto max-w-3xl text-center" data-reveal>
-      <p class="eyebrow justify-center">Beyond the form</p>
+      <p class="eyebrow justify-center">{t.eyebrow}</p>
       <h2 id="features-title" class="display display-lg mt-4">
-        <span class="dim">Remember every application.</span><br />Manage it from your agent.
+        <span class="dim">{t.titleDim}</span><br />{t.title}
       </h2>
     </div>
 
@@ -60,10 +63,10 @@ const agents = ['Claude Desktop', 'Claude Code', 'Codex', 'Antigravity', 'OpenCo
         <div class="p-6">
           <div class="flex items-center gap-3">
             <span class="icon-tile"><Icon name="ListChecks" /></span>
-            <h3 class="text-[1.0625rem] font-medium tracking-tight">Track every application</h3>
+            <h3 class="text-[1.0625rem] font-medium tracking-tight">{t.trackTitle}</h3>
           </div>
           <p class="mt-3 text-sm leading-relaxed text-fg-2">
-            Every application and what you answered, with its status. AnswerOnce reminds you if you already applied to that job.
+            {t.trackBody}
           </p>
         </div>
       </article>
@@ -98,12 +101,12 @@ const agents = ['Claude Desktop', 'Claude Code', 'Codex', 'Antigravity', 'OpenCo
         <div class="p-6">
           <div class="flex items-center gap-3">
             <span class="icon-tile"><Icon name="Bot" /></span>
-            <h3 class="text-[1.0625rem] font-medium tracking-tight">Works with your AI agent</h3>
+            <h3 class="text-[1.0625rem] font-medium tracking-tight">{t.agentTitle}</h3>
           </div>
           <p class="mt-3 text-sm leading-relaxed text-fg-2">
-            Add it to Claude Desktop from one file. Ask it to import your CV or list your applications. Profile changes wait for your approval.
+            {t.agentBody}
           </p>
-          <ul class="mt-4 flex flex-wrap gap-2" aria-label="Compatible agents">
+          <ul class="mt-4 flex flex-wrap gap-2" aria-label={t.agentsAria}>
             {agents.map((a) => <li class="rounded-full border border-line px-2.5 py-1 text-xs text-fg-2">{a}</li>)}
           </ul>
         </div>

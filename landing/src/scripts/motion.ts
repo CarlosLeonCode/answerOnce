@@ -115,6 +115,11 @@ function hero() {
       const { createHeroScene } = await import('./hero3d');
       scene = await createHeroScene(canvas, context, {
         mobile: matchMedia('(max-width: 767px)').matches,
+        videoSrc: canvas.dataset.videoSrc,
+        frameTop: () => {
+          const row = $('[data-hero-agents]', stage);
+          return row ? row.offsetTop + row.offsetHeight : 0;
+        },
         onFirstFrame: () => canvas.classList.add('ready'),
       });
     } catch {

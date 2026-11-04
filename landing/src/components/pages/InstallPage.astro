@@ -1,0 +1,330 @@
+---
+import Base from '../../layouts/Base.astro';
+import Nav from '../Nav.astro';
+import Footer from '../Footer.astro';
+import Icon from '../Icon.astro';
+import CodeBlock from '../CodeBlock.astro';
+import Rich from '../Rich.astro';
+import Step from '../install/Step.astro';
+import For from '../install/For.astro';
+import Mock from '../install/Mock.astro';
+import { browsers } from '../../browsers';
+import { downloads } from '../../downloads';
+import { site } from '../../site';
+import { fmt, toLocale, useStrings } from '../../i18n';
+
+const locale = toLocale(Astro.currentLocale);
+const s = useStrings(locale);
+const t = s.guide;
+const zip = downloads.extension;
+const mcpb = downloads.mcpb;
+const steps = t.steps;
+const TOTAL = steps.length;
+// Values the step texts can use as {file} and {size}.
+const vars = [{ file: zip.file, size: zip.size && ` (${zip.size})` }, {}, {}, {}, {}, {}, {}, { file: mcpb.file }];
+const summaryClass =
+  'flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-medium transition-colors hover:bg-surface-2 sm:px-6 [&::-webkit-details-marker]:hidden';
+// Runtime strings for scripts/install.ts (escaped for an inline JSON script).
+const scriptStrings = JSON.stringify({ ...t.script, copyAddress: s.code.copyAddress }).replace(/</g, '\\u003c');
+---
+
+<Base title={t.pageTitle} description={t.pageDescription}>
+  <Nav />
+  <main id="main" class="install-guide">
+    <!-- Before the steps are parsed: pick the browser wording (saved choice, else a guess) so nothing flips after paint. -->
+    <script is:inline>
+      (function () {
+        var d = document.documentElement;
+        var ids = ['chrome', 'arc', 'edge', 'brave'];
+        var b;
+        try {
+          b = JSON.parse(localStorage.getItem('answeronce:install-guide') || '{}').browser;
+        } catch (e) {}
+        if (ids.indexOf(b) < 0) {
+          var ua = navigator.userAgent;
+          var brands = ((navigator.userAgentData && navigator.userAgentData.brands) || [])
+            .map(function (x) {
+              return x.brand;
+            })
+            .join(' ');
+          b = /Edg\//.test(ua) || /Edge/.test(brands) ? 'edge' : navigator.brave || /Brave/.test(brands) ? 'brave' : 'chrome';
+          d.setAttribute('data-browser-auto', '');
+        }
+        d.setAttribute('data-browser', b);
+      })();
+    </script>
+    <script type="application/json" data-guide-strings set:html={scriptStrings} />
+
+    <section class="container-page pt-28 pb-10 sm:pt-36 sm:pb-14" aria-labelledby="install-title">
+      <div class="grid items-end gap-x-14 gap-y-8 lg:grid-cols-[1.1fr_0.9fr]">
+        <div class="min-w-0">
+          <p class="eyebrow">{t.eyebrow}</p>
+          <h1 id="install-title" class="display display-lg mt-4">
+            <span class="dim">{t.titleDim}</span><br />{t.title}
+          </h1>
+          <p class="lead mt-5 max-w-[38rem]">{t.lead}</p>
+        </div>
+
+        <div class="card min-w-0 p-5 sm:p-6">
+          <div class="flex items-center gap-3.5">
+            <span class="mk-zip mk-zip-lg flex-none" aria-hidden="true"></span>
+            <div class="min-w-0">
+              <p class="truncate font-mono text-[0.9375rem] font-medium">{zip.file}</p>
+              <p class="mt-0.5 text-sm text-muted">
+                {fmt(t.version, { version: downloads.version })}{zip.size && ` · ${zip.size}`} · Chrome, Arc, Edge, Brave
+              </p>
+            </div>
+          </div>
+
+          <!-- Shown by the script below when the page was opened with ?download=1. -->
+          <div class="dl-banner mt-5" role="status" hidden data-dl-banner>
+            <Icon name="CircleCheck" class="mt-0.5 size-5 flex-none text-success" />
+            <p>
+              {t.started}{' '}
+              <a href={zip.href} download={zip.file} class="font-medium text-fg underline underline-offset-4">{t.again}</a>
+            </p>
+          </div>
+          <a href={zip.href} download={zip.file} class="btn btn-dark mt-5 w-full" data-dl-button>
+            <Icon name="Download" />{t.download}
+          </a>
+          <a href={zip.href} download={zip.file} hidden tabindex="-1" aria-hidden="true" data-dl-auto></a>
+          <script is:inline>
+            (function () {
+              var params = new URLSearchParams(location.search);
+              if (params.get('download') !== '1') return;
+              var banner = document.querySelector('[data-dl-banner]');
+              var button = document.querySelector('[data-dl-button]');
+              if (banner) banner.hidden = false;
+              if (button) button.hidden = true;
+              var auto = document.querySelector('[data-dl-auto]');
+              if (auto) auto.click();
+              // Drop the parameter so a reload does not download again.
+              params.delete('download');
+              var q = params.toString();
+              history.replaceState(history.state, '', location.pathname + (q ? '?' + q : '') + location.hash);
+            })();
+          </script>
+
+          <p class="mt-4 text-[0.8125rem] leading-relaxed text-muted">
+            {t.needs}{' '}
+            {
+              site.repoUrl && (
+                <>
+                  {t.preferBuild}{' '}
+                  <a href="#build-from-source" class="underline decoration-line-strong underline-offset-4 hover:text-fg">
+                    {t.buildLink}
+                  </a>
+                  .
+                </>
+              )
+            }
+          </p>
+        </div>
+      </div>
+
+      <p class="env-note mt-6" hidden data-env-note>
+        <Icon name="TriangleAlert" class="mt-0.5 size-5 flex-none text-warning" />
+        <span data-env-text></span>
+      </p>
+    </section>
+
+    <section class="container-page pb-16 sm:pb-24" aria-label={t.stepsAria}>
+      <div class="grid gap-8 lg:grid-cols-[16.5rem_minmax(0,1fr)] lg:gap-10">
+        <aside class="min-w-0">
+          <div class="card guide-side p-5">
+            <fieldset class="js-only">
+              <legend class="text-sm font-medium">{t.yourBrowser}</legend>
+              <div class="browser-picker mt-3">
+                {
+                  browsers.map((b) => (
+                    <label class="browser-opt">
+                      <input type="radio" name="browser" value={b.id} checked={b.id === 'chrome'} />
+                      <span>{b.name}</span>
+                    </label>
+                  ))
+                }
+              </div>
+              <p class="mt-2.5 text-xs text-muted" data-browser-hint>{t.hint}</p>
+            </fieldset>
+
+            <div class="js-only mt-6 border-t border-line pt-5">
+              <div class="flex items-baseline justify-between gap-3">
+                <p class="text-sm font-medium" id="progress-label">{t.progress}</p>
+                <p class="text-sm text-muted tabular-nums" data-progress-text aria-hidden="true">{fmt(t.script.count, { n: 0, total: TOTAL })}</p>
+              </div>
+              <div
+                class="progress mt-2.5"
+                role="progressbar"
+                aria-labelledby="progress-label"
+                aria-valuemin="0"
+                aria-valuemax={TOTAL}
+                aria-valuenow="0"
+                aria-valuetext={fmt(t.script.countLong, { n: 0, total: TOTAL })}
+                data-progress
+              >
+                <span class="progress-fill" data-progress-fill></span>
+              </div>
+
+              <ol class="guide-index mt-4">
+                {
+                  steps.map((st, i) => (
+                    <li>
+                      <a href={`#step-${i + 1}`} data-index={i + 1}>
+                        <span class="guide-dot" aria-hidden="true" />
+                        {st.title}
+                      </a>
+                    </li>
+                  ))
+                }
+              </ol>
+
+              <button type="button" class="btn btn-ghost btn-sm mt-5 w-full" data-reset>
+                <Icon name="RotateCcw" />{t.reset}
+              </button>
+              <p class="sr-only" aria-live="polite" data-announce></p>
+            </div>
+
+            <noscript>
+              <Rich text={t.noscript} class="text-sm leading-relaxed text-muted" />
+            </noscript>
+          </div>
+        </aside>
+
+        <div class="min-w-0">
+          <ol class="steps-list">
+            {
+              steps.map((st, i) => {
+                const n = i + 1;
+                return (
+                  <Step n={n} title={st.title} optional={n === 8}>
+                    <Rich text={st.body} vars={vars[i]} />
+                    {n === 1 && (
+                      <a href={zip.href} download={zip.file} class="btn btn-ghost btn-sm mt-1">
+                        <Icon name="Download" />
+                        {fmt(t.downloadFile, { file: zip.file })}
+                      </a>
+                    )}
+                    {n === 3 && (
+                      <div class="url-box">
+                        <code class="url-text">
+                          {browsers.map((b) => (
+                            <For b={b.id}>{b.extensionsUrl}</For>
+                          ))}
+                        </code>
+                        <button
+                          type="button"
+                          class="copy-btn hidden h-8 flex-none items-center gap-1.5 rounded-lg border border-line-strong bg-white px-2.5 text-xs font-medium text-fg-2 transition-colors hover:text-fg"
+                          data-copy="chrome://extensions"
+                          data-copied={s.code.copied}
+                          data-copy-fail={s.code.copyFail}
+                          data-url-copy
+                          aria-label={fmt(s.code.copyAddress, { url: 'chrome://extensions' })}
+                        >
+                          <Icon name="Copy" class="size-3.5" />
+                          <span class="copy-label" aria-live="polite">
+                            {s.code.copy}
+                          </span>
+                        </button>
+                      </div>
+                    )}
+                    {n === 8 && (
+                      <a href={mcpb.href} download={mcpb.file} class="btn btn-ghost btn-sm mt-1">
+                        <Icon name="Download" />
+                        {fmt(t.downloadFile, { file: mcpb.file })}
+                        {mcpb.size && ` (${mcpb.size})`}
+                      </a>
+                    )}
+                    {st.note && <Rich text={st.note} vars={vars[i]} class="step-note" />}
+                    <Mock slot="mock" kind={(['download', 'unzip', 'open', 'devmode', 'load', 'pin', 'firstrun', 'claude'] as const)[i]} />
+                  </Step>
+                );
+              })
+            }
+          </ol>
+
+          <div class="card guide-finish mt-6 p-5 sm:p-6" data-finish>
+            <span class="icon-tile"><Icon name="Sparkles" /></span>
+            <div class="min-w-0">
+              <h3 class="font-medium">{t.finishTitle}</h3>
+              <Rich text={t.finishBody} class="guide-finish-body mt-1 text-[0.9375rem] leading-relaxed text-muted" />
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="troubleshooting" class="section-pad border-t border-line" aria-labelledby="trouble-title">
+      <div class="container-page grid gap-8 lg:grid-cols-[0.8fr_1.2fr] lg:gap-14">
+        <div>
+          <p class="eyebrow">{t.trouble.eyebrow}</p>
+          <h2 id="trouble-title" class="display display-md mt-4"><span class="dim">{t.trouble.titleDim}</span><br />{t.trouble.title}</h2>
+          {
+            site.repoUrl && (
+              <p class="lead mt-4">
+                {t.trouble.stillStuck}{' '}
+                <a href={`${site.repoUrl}/issues`} class="text-fg underline decoration-line-strong underline-offset-4" rel="noopener">
+                  {t.trouble.issue}
+                </a>{' '}
+                {t.trouble.issueAfter}
+              </p>
+            )
+          }
+        </div>
+
+        <div class="card divide-y divide-line overflow-hidden">
+          {
+            t.trouble.items.map((f) => (
+              <details class="group">
+                <summary class={summaryClass}>
+                  {f.q}
+                  <Icon name="ChevronDown" class="size-5 flex-none text-muted transition-transform group-open:rotate-180" />
+                </summary>
+                <p class="px-5 pb-5 text-[0.9375rem] leading-relaxed text-muted sm:px-6">{f.a}</p>
+              </details>
+            ))
+          }
+          <details class="group">
+            <summary class={summaryClass}>
+              {t.trouble.ollamaQ}
+              <Icon name="ChevronDown" class="size-5 flex-none text-muted transition-transform group-open:rotate-180" />
+            </summary>
+            <div class="px-5 pb-5 sm:px-6">
+              <Rich text={t.trouble.ollamaA} class="text-[0.9375rem] leading-relaxed text-muted" />
+              <div class="mt-4 space-y-2.5">
+                <CodeBlock label={t.trouble.ollamaMac} code={'launchctl setenv OLLAMA_ORIGINS "chrome-extension://*"'} />
+                <CodeBlock label={t.trouble.ollamaServe} code={'OLLAMA_ORIGINS="chrome-extension://*" ollama serve'} />
+              </div>
+            </div>
+          </details>
+          {
+            site.repoUrl && (
+              <details class="group" id="build-from-source">
+                <summary class={summaryClass}>
+                  {t.trouble.buildQ}
+                  <Icon name="ChevronDown" class="size-5 flex-none text-muted transition-transform group-open:rotate-180" />
+                </summary>
+                <div class="px-5 pb-5 sm:px-6">
+                  <p class="text-[0.9375rem] leading-relaxed text-muted">
+                    {t.trouble.buildBefore}{' '}
+                    <a href={site.repoUrl} class="text-fg underline decoration-line-strong underline-offset-4" rel="noopener">
+                      {t.trouble.buildLink}
+                    </a>{' '}
+                    <Rich as="span" text={t.trouble.buildAfter} />
+                  </p>
+                  <div class="mt-4">
+                    <CodeBlock code={'pnpm install\npnpm build'} />
+                  </div>
+                </div>
+              </details>
+            )
+          }
+        </div>
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Base>
+
+<script>
+  import '../../scripts/install';
+</script>

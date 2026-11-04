@@ -2,6 +2,7 @@
 import '@fontsource-variable/inter';
 import '../styles/global.css';
 import { site } from '../site';
+import { basePath, localeMeta, locales, switchLocale, toLocale, useStrings } from '../i18n';
 import interLatin from '@fontsource-variable/inter/files/inter-latin-wght-normal.woff2?url';
 
 interface Props {
@@ -9,19 +10,44 @@ interface Props {
   description?: string;
 }
 
-const { title = site.title, description = site.description } = Astro.props;
-const canonical = Astro.site ? new URL(Astro.url.pathname, Astro.site).href : undefined;
+const locale = toLocale(Astro.currentLocale);
+const t = useStrings(locale);
+const { title = t.meta.title, description = t.meta.description } = Astro.props;
+const abs = (path: string) => (Astro.site ? new URL(path, Astro.site).href : path);
+const canonical = Astro.site ? abs(Astro.url.pathname) : undefined;
+// The same page in every locale; x-default is the English page.
+const alternates = locales.map((l) => ({ hreflang: localeMeta[l].lang, href: abs(switchLocale(Astro.url.pathname, l)) }));
+const xDefault = abs(basePath(Astro.url.pathname));
 const ogImage = Astro.site ? new URL('/og.png', Astro.site).href : '/og.png';
+// Structured data for search and answer engines. `<` is escaped so the JSON can never close the script.
+const jsonLd = JSON.stringify({
+  '@context': 'https://schema.org',
+  '@type': 'SoftwareApplication',
+  name: site.name,
+  description,
+  applicationCategory: 'BrowserApplication',
+  operatingSystem: 'Chromium-based browsers (Chrome 116 or later)',
+  inLanguage: localeMeta[locale].lang,
+  isAccessibleForFree: true,
+  offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
+  license: 'https://www.gnu.org/licenses/agpl-3.0.html',
+  image: ogImage,
+  author: { '@type': 'Person', name: 'carlosleoncode', url: 'https://www.carlosleoncode.com' },
+  ...(canonical ? { url: canonical } : {}),
+  ...(site.repoUrl ? { sameAs: [site.repoUrl] } : {}),
+}).replace(/</g, '\\u003c');
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={localeMeta[locale].lang}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
     {canonical && <link rel="canonical" href={canonical} />}
+    {alternates.map((a) => <link rel="alternate" hreflang={a.hreflang} href={a.href} />)}
+    <link rel="alternate" hreflang="x-default" href={xDefault} />
     <meta name="color-scheme" content="light" />
     <meta name="theme-color" content="#fafafa" />
     <link rel="preload" href={interLatin} as="font" type="font/woff2" crossorigin />
@@ -30,18 +56,21 @@ const ogImage = Astro.site ? new URL('/og.png', Astro.site).href : '/og.png';
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     <meta property="og:type" content="website" />
+    <meta property="og:locale" content={localeMeta[locale].og} />
+    {locales.filter((l) => l !== locale).map((l) => <meta property="og:locale:alternate" content={localeMeta[l].og} />)}
     <meta property="og:site_name" content={site.name} />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
-    <meta property="og:image:alt" content="AnswerOnce: answer once, apply everywhere, without giving your data away." />
+    <meta property="og:image:alt" content={t.meta.ogImageAlt} />
     {canonical && <meta property="og:url" content={canonical} />}
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
+    <script type="application/ld+json" set:html={jsonLd} />
 
     <!--
       Decide the motion mode before first paint so the tall scroll stages never shift layout:
@@ -63,7 +92,7 @@ const ogImage = Astro.site ? new URL('/og.png', Astro.site).href : '/og.png';
     <a
       href="#main"
       class="sr-only z-[100] rounded-full bg-[#0b0b0f] px-4 py-2 font-medium text-white focus:not-sr-only focus:fixed focus:top-3 focus:left-3"
-      >Skip to content</a
+      >{t.meta.skip}</a
     >
     <div class="backdrop" aria-hidden="true"></div>
     <slot />

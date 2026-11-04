@@ -1,0 +1,18 @@
+---
+/**
+ * Renders a Rich string from the i18n dictionaries: **bold**, `code` and {vars}, plus browser-only
+ * segments ({ b: 'edge', t: '…' }) wrapped like For.astro so the install guide's CSS can switch them.
+ */
+import { richHtml, type Rich } from '../i18n';
+
+interface Props {
+  text: Rich;
+  vars?: Record<string, string | number>;
+  as?: 'p' | 'span';
+  class?: string;
+}
+const { text, vars, as: Tag = 'p', class: className } = Astro.props;
+const segs = typeof text === 'string' ? [text] : text;
+---
+
+<Tag class={className}>{segs.map((s) => (typeof s === 'string' ? <Fragment set:html={richHtml(s, vars)} /> : <span data-for={s.b} set:html={richHtml(s.t, vars)} />))}</Tag>

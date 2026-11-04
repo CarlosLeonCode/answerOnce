@@ -1,3 +1,5 @@
+import { localize, type Locale } from './i18n';
+
 /** The files offered on the install page. Version and sizes are filled in at build time (astro.config.mjs). */
 declare const __DOWNLOADS__: { version: string; extensionSize: number; mcpbSize: number };
 
@@ -12,5 +14,5 @@ export const downloads = {
   mcpb: { href: '/downloads/answeronce.mcpb', file: 'answeronce.mcpb', size: formatSize(facts.mcpbSize) },
 };
 
-/** Where every "Install" button points: the tutorial, which starts the download on arrival. */
-export const installHref = '/install/?download=1';
+/** Where every "Install" button points: the tutorial (in the page's locale), which starts the download on arrival. */
+export const installHref = (locale: Locale) => localize(locale, '/install/?download=1');

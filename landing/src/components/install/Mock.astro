@@ -7,11 +7,14 @@ import Icon from '../Icon.astro';
 import For from './For.astro';
 import { browsers } from '../../browsers';
 import { downloads } from '../../downloads';
+import { toLocale, useStrings } from '../../i18n';
 
 interface Props {
   kind: 'download' | 'unzip' | 'open' | 'devmode' | 'load' | 'pin' | 'firstrun' | 'claude';
 }
 const { kind } = Astro.props;
+// Mock UI labels stay in English (the browser and extension UI); only the hand-drawn annotations are translated.
+const t = useStrings(toLocale(Astro.currentLocale)).guide.mock;
 const url = browsers.map((b) => ({ b: b.id, text: b.extensionsUrl }));
 ---
 
@@ -56,7 +59,7 @@ const url = browsers.map((b) => ({ b: b.id, text: b.extensionsUrl }));
         </figure>
         <span class="mk-arrow">
           <Icon name="ArrowRight" class="size-4" />
-          <span>double-click</span>
+          <span>{t.doubleClick}</span>
         </span>
         <figure class="mk-file mk-file-selected">
           <span class="mk-folder mk-folder-lg" />
@@ -258,7 +261,7 @@ const url = browsers.map((b) => ({ b: b.id, text: b.extensionsUrl }));
       </figure>
       <span class="mk-arrow">
         <Icon name="ArrowRight" class="size-4" />
-        <span>open</span>
+        <span>{t.open}</span>
       </span>
       <div class="mk-install">
         <p class="text-[0.6875rem] text-muted">Claude Desktop</p>

@@ -26,15 +26,17 @@ if (navigator.clipboard) {
   document.querySelectorAll<HTMLButtonElement>('.copy-btn').forEach((btn) => {
     btn.classList.remove('hidden');
     btn.classList.add('inline-flex');
+    // Labels come from the page (localized); the button's initial text is the idle label.
     const label = btn.querySelector('.copy-label')!;
+    const idle = label.textContent ?? '';
     btn.addEventListener('click', async () => {
       try {
         await navigator.clipboard.writeText(btn.dataset.copy ?? '');
-        label.textContent = 'Copied';
+        label.textContent = btn.dataset.copied ?? '';
       } catch {
-        label.textContent = 'Press ⌘C';
+        label.textContent = btn.dataset.copyFail ?? '';
       }
-      setTimeout(() => (label.textContent = 'Copy'), 1600);
+      setTimeout(() => (label.textContent = idle), 1600);
     });
   });
 }

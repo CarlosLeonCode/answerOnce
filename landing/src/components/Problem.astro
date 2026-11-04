@@ -1,6 +1,9 @@
 ---
 import Icon from './Icon.astro';
 import FormSkeleton from './FormSkeleton.astro';
+import { toLocale, useStrings } from '../i18n';
+
+const t = useStrings(toLocale(Astro.currentLocale)).problem;
 
 /**
  * Fields torn from four fictional application forms. Every label is a phrasing the generic matcher
@@ -50,13 +53,14 @@ const frags = [
   },
 ] as const;
 
+const f = t.fields;
 const profile = [
-  ['First name', 'Jordan', false],
-  ['Email', 'jordan.rivera@example.com', false],
-  ['Phone', '+351 912 345 678', true],
-  ['LinkedIn', '/in/jordan-rivera-dev', false],
-  ['Resume / CV', 'jordan-rivera-cv.pdf', false],
-  ['Work authorization', 'Yes', true],
+  [f.firstName, 'Jordan', false],
+  [f.email, 'jordan.rivera@example.com', false],
+  [f.phone, '+351 912 345 678', true],
+  [f.linkedin, '/in/jordan-rivera-dev', false],
+  [f.cv, 'jordan-rivera-cv.pdf', false],
+  [f.workAuth, f.yes, true],
 ] as const;
 ---
 
@@ -66,14 +70,14 @@ const profile = [
       <FormSkeleton class="-z-10" />
 
       <div class="vault-heading container-page text-center" data-vault-heading>
-        <p class="eyebrow justify-center">The problem</p>
+        <p class="eyebrow justify-center">{t.eyebrow}</p>
         <h2 id="problem-title" class="display display-lg mx-auto mt-4 max-w-[46rem]">
-          <span class="dim">Same questions.</span><br />Different forms.
+          <span class="dim">{t.titleDim}</span><br />{t.title}
         </h2>
-        <p class="lead mx-auto mt-5 max-w-[34rem]">Every job site asks the same things its own way.</p>
+        <p class="lead mx-auto mt-5 max-w-[34rem]">{t.lead}</p>
       </div>
 
-      <ul class="vault-frags container-page" aria-label="The same questions, as four different application forms ask them">
+      <ul class="vault-frags container-page" aria-label={t.fragsAria}>
         {
           frags.map((f) => (
             <li class:list={['frag', `frag-${f.style}`]} data-x={f.x} data-y={f.y} data-r={f.r} data-frag>
@@ -96,8 +100,8 @@ const profile = [
       <div class="vault-result" data-vault-result>
         <div class="card profile-card" data-vault-profile>
           <div class="flex items-center justify-between gap-3 border-b border-line px-4 py-3">
-            <p class="text-sm font-medium">Your profile</p>
-            <p class="text-xs text-muted">One answer per question</p>
+            <p class="text-sm font-medium">{t.profile}</p>
+            <p class="text-xs text-muted">{t.profileNote}</p>
           </div>
           <dl class="divide-y divide-line">
             {
@@ -113,7 +117,7 @@ const profile = [
 
         <div class="vault-link" data-vault-link aria-hidden="true">
           <span class="vault-link-line" data-vault-line></span>
-          <span class="vault-link-tag">saved to</span>
+          <span class="vault-link-tag">{t.savedTo}</span>
         </div>
 
         <figure class="vault-file" data-vault-file>
@@ -123,16 +127,16 @@ const profile = [
           </div>
           <figcaption class="mt-3 text-center">
             <code class="block text-sm font-medium text-fg">profile.json</code>
-            <span class="mt-0.5 block text-xs text-muted">in your folder · on your disk</span>
+            <span class="mt-0.5 block text-xs text-muted">{t.fileNote}</span>
           </figcaption>
         </figure>
       </div>
 
       <div class="vault-outro container-page mt-12 text-center" data-vault-outro>
         <p class="display display-md mx-auto max-w-[44rem]">
-          <span class="dim">One profile.</span> Every form.
+          <span class="dim">{t.outroDim}</span>{' '}{t.outro}
         </p>
-        <p class="lead mx-auto mt-4 max-w-[38rem]">Greenhouse, Lever, Ashby and many standard forms, in English and Spanish.</p>
+        <p class="lead mx-auto mt-4 max-w-[38rem]">{t.outroLead}</p>
       </div>
     </div>
   </div>

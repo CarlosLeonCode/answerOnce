@@ -1,6 +1,7 @@
 /**
- * The hero's 3D laptop, built procedurally (no external models). The screen is a CanvasTexture
- * painted by ./screen. Scroll progress comes in through setState(); the render loop only runs
+ * The hero's 3D laptop, built procedurally (no external models). In the first pose the screen plays
+ * the muted product video; as the camera moves in it crossfades to a CanvasTexture painted by
+ * ./screen. Scroll progress comes in through setState(); the render loop (and the video) only run
  * while start() is in effect and the tab is visible.
  */
 import {
@@ -26,6 +27,7 @@ import {
   Scene,
   SRGBColorSpace,
   Vector3,
+  VideoTexture,
   WebGLRenderer,
   type Material,
   type Texture,
@@ -50,6 +52,10 @@ export interface HeroScene {
 
 interface Options {
   mobile: boolean;
+  /** Muted product video shown on the screen in the first pose. */
+  videoSrc?: string;
+  /** Bottom of the hero copy, in px from the top of the canvas: the first pose fits below it. */
+  frameTop?: () => number;
   onFirstFrame?: () => void;
 }
 
@@ -183,6 +189,35 @@ export async function createHeroScene(canvas: HTMLCanvasElement, context: WebGL2
   screen.position.set(0, screenY, 0.003);
   lid.add(screen);
 
+  // Product video, in front of the painted screen; its opacity crossfades between the two.
+  const videoMat = new MeshBasicMaterial({ toneMapped: false, transparent: true, opacity: 0 });
+  const videoScreen = new Mesh(new PlaneGeometry(SCR_W, SCR_H), videoMat);
+  videoScreen.position.set(0, screenY, 0.008);
+  videoScreen.visible = false;
+  lid.add(videoScreen);
+  let video: HTMLVideoElement | null = null;
+  let videoTex: VideoTexture | null = null;
+  let videoReady = false;
+  let videoBlocked = false;
+  if (opts.videoSrc) {
+    video = document.createElement('video');
+    video.muted = true;
+    video.loop = true;
+    video.playsInline = true;
+    video.preload = 'auto';
+    video.setAttribute('muted', '');
+    video.setAttribute('playsinline', '');
+    video.src = opts.videoSrc;
+    video.addEventListener('loadeddata', () => (videoReady = true), { once: true });
+    video.addEventListener('error', () => (videoBlocked = true), { once: true });
+    videoTex = new VideoTexture(video);
+    videoTex.colorSpace = SRGBColorSpace;
+    // The video is 16:9 and the screen 16:10: crop the sides so it covers the screen.
+    videoTex.repeat.x = SCR_W / SCR_H / (16 / 9);
+    videoTex.offset.x = (1 - videoTex.repeat.x) / 2;
+    videoMat.map = videoTex;
+  }
+
   // Soft contact shadow on an invisible "floor" below the floating laptop.
   const shadowCanvas = document.createElement('canvas');
   shadowCanvas.width = shadowCanvas.height = 512;
@@ -229,25 +264,34 @@ export async function createHeroScene(canvas: HTMLCanvasElement, context: WebGL2
   const poseA = { pos: new Vector3(), target: new Vector3(), shift: 0 };
   const poseB = { pos: new Vector3(), target: new Vector3(), shift: 0 };
   const poseC = { pos: new Vector3(), target: new Vector3(), shift: 0 };
-  const ROT_A = mobile ? -0.32 : -0.42;
+  const ROT_A = mobile ? -0.12 : -0.2;
 
   function computePoses() {
     const aspect = width / height;
-    // A: laptop low in frame, three-quarter view.
-    const wA = aspect < 1 ? 0.74 : 0.36;
-    const hA = aspect < 1 ? 0.34 : 0.38;
-    const dA = Math.max(BASE_W / (wA * 2 * tanHalf * aspect), 2.5 / (hA * 2 * tanHalf));
-    const center = new Vector3(0, 0.95, 0.15);
-    const elev = MathUtils.degToRad(13);
-    poseA.target.copy(center);
-    poseA.pos.set(0, center.y + Math.sin(elev) * dA, center.z + Math.cos(elev) * dA);
-    poseA.shift = aspect < 1 ? -0.64 : -0.66; // NDC: content moves down
-
-    // B: straight onto the screen (computed with the laptop at rest).
+    // All poses are computed with the laptop at rest.
     laptop.rotation.set(0, 0, 0);
     float.position.set(0, 0, 0);
     float.rotation.set(0, 0, 0);
     float.updateMatrixWorld(true);
+    const box = new Box3().setFromObject(laptop);
+    const size = box.getSize(new Vector3());
+    const mid = box.getCenter(new Vector3());
+    const projected = (elev: number) => size.y * Math.cos(elev) + size.z * Math.sin(elev);
+
+    // A: nearly face-on, filling the band between the hero copy and the bottom edge (the screen
+    // plays the video here). A tall copy (phones) leaves a minimum band, so the laptop starts
+    // below the fold and rises as the camera moves in; it never covers the copy.
+    const top = (opts.frameTop?.() ?? 0) + 16;
+    const bottom = height * 0.94;
+    const band = Math.max(bottom - top, height * 0.3);
+    const elevA = MathUtils.degToRad(10);
+    const wA = aspect < 1 ? 0.9 : 0.72;
+    const dA = Math.max((size.x * 1.08) / (wA * 2 * tanHalf * aspect), (projected(elevA) * 1.12) / ((band / height) * 2 * tanHalf));
+    poseA.target.copy(mid);
+    poseA.pos.set(mid.x, mid.y + Math.sin(elevA) * dA, mid.z + Math.cos(elevA) * dA);
+    poseA.shift = 1 - (2 * (top + band / 2)) / height; // NDC: moves the laptop to the band's middle
+
+    // B: straight onto the screen.
     const sc = new Vector3();
     screen.getWorldPosition(sc);
     const normal = new Vector3(0, 0, 1).applyQuaternion(screen.getWorldQuaternion(new Quaternion()));
@@ -259,11 +303,8 @@ export async function createHeroScene(canvas: HTMLCanvasElement, context: WebGL2
     poseB.shift = aspect < 1 ? 0.2 : 0.07;
 
     // C: pulled back, face-on, the whole laptop inside the frame (above the caption).
-    const box = new Box3().setFromObject(laptop);
-    const size = box.getSize(new Vector3());
-    const mid = box.getCenter(new Vector3());
     const elevC = MathUtils.degToRad(16);
-    const projH = size.y * Math.cos(elevC) + size.z * Math.sin(elevC);
+    const projH = projected(elevC);
     const wC = aspect < 1 ? 0.8 : 0.46;
     const hC = aspect < 1 ? 0.34 : 0.54;
     const dC = Math.max(size.x / (wC * 2 * tanHalf * aspect), projH / (hC * 2 * tanHalf));
@@ -326,6 +367,13 @@ export async function createHeroScene(canvas: HTMLCanvasElement, context: WebGL2
     const shift = MathUtils.lerp(MathUtils.lerp(poseA.shift, poseB.shift, e), poseC.shift, b);
     camera.setViewOffset(width, height, 0, (shift * height) / 2, width, height);
 
+    // Video while the camera is near the first pose; fades in once it has a frame.
+    const showVideo = videoReady && !videoBlocked ? 1 - MathUtils.smoothstep(e, 0.04, 0.3) : 0;
+    videoMat.opacity += (showVideo - videoMat.opacity) * Math.min(1, dt * 6);
+    if (showVideo === 0 && videoMat.opacity < 0.01) videoMat.opacity = 0;
+    videoScreen.visible = videoMat.opacity > 0;
+    syncVideo(running && e < 0.3);
+
     paintScreen();
     renderer.render(scene, camera);
     if (dirty) {
@@ -336,6 +384,12 @@ export async function createHeroScene(canvas: HTMLCanvasElement, context: WebGL2
         cb();
       }
     }
+  }
+
+  function syncVideo(play: boolean) {
+    if (!video || videoBlocked) return;
+    if (play && video.paused) video.play().catch(() => (videoBlocked = true));
+    else if (!play && !video.paused) video.pause();
   }
 
   // ---------- Loop control ----------
@@ -355,6 +409,7 @@ export async function createHeroScene(canvas: HTMLCanvasElement, context: WebGL2
     } else if (!should && running) {
       running = false;
       cancelAnimationFrame(raf);
+      syncVideo(false);
     }
   };
 
@@ -378,7 +433,9 @@ export async function createHeroScene(canvas: HTMLCanvasElement, context: WebGL2
   window.addEventListener('pointermove', onPointer, { passive: true });
   document.addEventListener('visibilitychange', sync);
   // Repaint once the web font is ready (the canvas text uses Inter).
+  // It can also change the height of the hero copy, which the first pose depends on.
   document.fonts?.load(`500 26px "Inter Variable"`).then(() => {
+    computePoses();
     drawn = { fill: -1, panel: -1 };
     if (!running) frame(performance.now());
   });
@@ -405,6 +462,12 @@ export async function createHeroScene(canvas: HTMLCanvasElement, context: WebGL2
       ro.disconnect();
       window.removeEventListener('pointermove', onPointer);
       document.removeEventListener('visibilitychange', sync);
+      if (video) {
+        video.pause();
+        video.removeAttribute('src');
+        video.load();
+      }
+      videoTex?.dispose();
       const mats = new Set<Material>();
       const texs = new Set<Texture>([screenTex, shadowTex, envTex]);
       scene.traverse((o) => {

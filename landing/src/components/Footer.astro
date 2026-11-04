@@ -1,16 +1,21 @@
 ---
 import Brand from './Brand.astro';
 import { site } from '../site';
+import { basePath, localize, toLocale, useStrings } from '../i18n';
 
+const locale = toLocale(Astro.currentLocale);
+const s = useStrings(locale);
+const t = s.footer;
 const year = new Date().getFullYear();
-const at = (hash: string) => (Astro.url.pathname === '/' ? hash : `/${hash}`);
+const homePath = localize(locale, '/');
+const at = (hash: string) => (basePath(Astro.url.pathname) === '/' ? hash : `${homePath}${hash}`);
 const links = [
-  { href: at('#how-it-works'), label: 'How it works' },
-  { href: at('#privacy'), label: 'Privacy' },
-  { href: '/install/', label: 'Install guide' },
-  { href: at('#faq'), label: 'FAQ' },
-  { href: at('#tools'), label: 'Tools' },
-  ...(site.repoUrl ? [{ href: site.repoUrl, label: 'Source' }] : []),
+  { href: at('#how-it-works'), label: s.nav.howItWorks },
+  { href: at('#privacy'), label: s.nav.privacy },
+  { href: localize(locale, '/install/'), label: s.nav.installGuide },
+  { href: at('#faq'), label: s.nav.faq },
+  { href: at('#tools'), label: s.nav.tools },
+  ...(site.repoUrl ? [{ href: site.repoUrl, label: s.nav.source }] : []),
 ];
 ---
 
@@ -18,26 +23,25 @@ const links = [
   <div class="container-page flex flex-col gap-6 md:flex-row md:items-center md:justify-between">
     <div class="flex flex-col gap-3 sm:flex-row sm:items-center sm:gap-5">
       <Brand />
-      <p class="text-[0.9375rem] text-muted">Spend your time on the job, not the form.</p>
+      <p class="text-[0.9375rem] text-muted">{t.tagline}</p>
     </div>
-    <nav aria-label="Footer">
-      <ul class="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+    <nav aria-label={t.aria}>
+      <ul class="flex flex-wrap gap-x-5 gap-y-1 text-sm">
         {
           links.map((l) => (
             <li>
-              <a href={l.href} class="text-muted transition-colors hover:text-fg">{l.label}</a>
+              <a href={l.href} class="inline-flex min-h-10 items-center text-muted transition-colors hover:text-fg md:min-h-0">{l.label}</a>
             </li>
           ))
         }
       </ul>
     </nav>
   </div>
-  <div class="container-page mt-8 flex flex-col gap-2 border-t border-line pt-6 text-xs text-muted sm:flex-row sm:justify-between">
+  <div class="container-page mt-8 flex flex-col gap-2 border-t border-line pt-6 text-xs leading-relaxed text-muted sm:flex-row sm:justify-between sm:gap-8">
     <p>
-      © {year} AnswerOnce. Open source under the{' '}
-      {site.repoUrl ? <a href={`${site.repoUrl}/blob/main/LICENSE`} class="underline hover:text-fg" rel="noopener">AGPL-3.0</a> : 'AGPL-3.0'}.
-      Screenshots use fictional data.
+      © {year} AnswerOnce. {t.licenseBefore}{' '}
+      {site.repoUrl ? <a href={`${site.repoUrl}/blob/main/LICENSE`} class="whitespace-nowrap underline hover:text-fg" rel="noopener">AGPL-3.0</a> : 'AGPL-3.0'}{t.licenseAfter}
     </p>
-    <p>Not affiliated with any applicant tracking system or AI provider. Product names belong to their owners.</p>
+    <p>{t.disclaimer}</p>
   </div>
 </footer>

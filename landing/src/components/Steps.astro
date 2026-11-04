@@ -3,36 +3,24 @@ import Shot from './Shot.astro';
 import importShot from '../assets/shots/import-review-crop-light.png';
 import fillShot from '../assets/shots/panel-after-fill-light.png';
 import draftShot from '../assets/shots/panel-ai-draft-crop-light.png';
+import { toLocale, useStrings } from '../i18n';
+
+const t = useStrings(toLocale(Astro.currentLocale)).steps;
+const [importText, fillText, draftText] = t.items;
 
 const steps = [
-  {
-    title: 'Import your CV',
-    body: 'Drop your CV and AI fills your profile, or use the basic extractor. You review every value.',
-    shot: importShot,
-    zoom: true,
-    alt: 'Import from CV review step: each extracted field (first name, last name, email, phone, location) is shown next to the current value with a checkbox, and a button to save the changes to the profile.',
-  },
-  {
-    title: 'Fill the application',
-    body: 'Press Fill this page. Known fields are filled and your CV is attached.',
-    shot: fillShot,
-    alt: 'AnswerOnce panel after filling: 9 fields filled, 1 needs input, 0 kept.',
-  },
-  {
-    title: 'Review & submit',
-    body: 'Draft open questions with AI, one click each. Then you press Submit.',
-    shot: draftShot,
-    alt: 'An AI-drafted answer to “Why do you want to work at Fieldstone?” in the AnswerOnce panel, with buttons to generate again, insert into page, or save the answer.',
-  },
-] as const;
+  { ...importText, shot: importShot, zoom: true },
+  { ...fillText, shot: fillShot },
+  { ...draftText, shot: draftShot },
+];
 ---
 
 <section id="how-it-works" class="section-pad relative" aria-labelledby="how-title">
   <div class="container-page">
     <div class="mx-auto max-w-3xl text-center" data-reveal>
-      <p class="eyebrow justify-center">How it works</p>
+      <p class="eyebrow justify-center">{t.eyebrow}</p>
       <h2 id="how-title" class="display display-lg mt-4">
-        <span class="dim">Set up once.</span><br />Then it takes a click.
+        <span class="dim">{t.titleDim}</span><br />{t.title}
       </h2>
     </div>
 

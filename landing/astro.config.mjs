@@ -20,11 +20,13 @@ const downloads = {
 };
 if (!downloads.extensionSize) console.warn('[downloads] public/downloads/answeronce-chrome.zip is missing: run `pnpm landing:build` from the repository root.');
 
-// Set SITE_URL at build time (e.g. SITE_URL=https://answeronce.example.com pnpm build)
-// so canonical and Open Graph URLs are absolute.
+// The site's absolute URL makes canonical, hreflang, Open Graph, sitemap and llms.txt URLs absolute.
+// SITE_URL wins; on Netlify, URL (the site's primary URL) is set for every build.
 export default defineConfig({
-  site: process.env.SITE_URL || undefined,
+  site: process.env.SITE_URL || process.env.URL || undefined,
   output: 'static',
+  // English at /, Spanish at /es/. Strings live in src/i18n/.
+  i18n: { defaultLocale: 'en', locales: ['en', 'es'], routing: { prefixDefaultLocale: false } },
   vite: {
     plugins: [tailwindcss()],
     define: { __DOWNLOADS__: JSON.stringify(downloads) },

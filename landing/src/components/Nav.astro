@@ -5,31 +5,40 @@ import Icon from './Icon.astro';
 import { tools } from '../tools';
 import { site } from '../site';
 import { installHref } from '../downloads';
+import { basePath, localeMeta, localize, locales, switchLocale, toLocale, useStrings } from '../i18n';
 
-// Section links are relative to the home page, so they also work from /install/.
-const home = Astro.url.pathname === '/';
-const at = (hash: string) => (home ? hash : `/${hash}`);
-const onInstall = Astro.url.pathname.startsWith('/install');
+const locale = toLocale(Astro.currentLocale);
+const t = useStrings(locale).nav;
+
+// Section links point at the home page of the current locale, so they also work from the install guide.
+const base = basePath(Astro.url.pathname);
+const home = base === '/';
+const homePath = localize(locale, '/');
+const at = (hash: string) => (home ? hash : `${homePath}${hash}`);
+const onInstall = base === '/install/';
 const links = [
-  { href: at('#how-it-works'), label: 'How it works' },
-  { href: at('#features'), label: 'Features' },
-  { href: at('#privacy'), label: 'Privacy' },
-  { href: '/install/', label: 'Install guide', current: onInstall },
-  { href: at('#faq'), label: 'FAQ' },
+  { href: at('#how-it-works'), label: t.howItWorks },
+  { href: at('#features'), label: t.features },
+  { href: at('#privacy'), label: t.privacy },
+  { href: localize(locale, '/install/'), label: t.installGuide, current: onInstall },
+  { href: at('#faq'), label: t.faq },
 ];
+const languages = locales.map((l) => ({ ...localeMeta[l], href: switchLocale(Astro.url.pathname, l), current: l === locale }));
 ---
 
-<header class="fixed inset-x-0 top-0 z-50">
+<header class="fixed inset-x-0 top-0 z-50" data-site-header>
   <div class="pointer-events-none absolute inset-0 border-b border-line bg-[#fafafa]/80 backdrop-blur-xl" aria-hidden="true"></div>
-  <nav class="container-page relative flex h-16 items-center justify-between gap-6 sm:h-[4.5rem]" aria-label="Main">
-    <a href={home ? '#top' : '/'} class="rounded-lg" aria-label="AnswerOnce home"><Brand /></a>
-    <ul class="hidden items-center gap-1 md:flex">
+  <nav class="container-page relative flex h-16 items-center justify-between gap-2 sm:h-[4.5rem] sm:gap-4" aria-label={t.aria}>
+    <a href={home ? '#top' : homePath} class="min-w-0 flex-none rounded-lg" aria-label={t.home}><Brand /></a>
+
+    <!-- Desktop links (xl and up; the Spanish labels need the room). Below xl they live in the menu panel. -->
+    <ul class="hidden items-center gap-0.5 xl:flex">
       {
         links.map((l) => (
           <li>
             <a
               href={l.href}
-              class="rounded-full px-3 py-2 text-sm text-muted transition-colors hover:text-fg aria-[current=page]:text-fg aria-[current=page]:font-medium lg:px-3.5"
+              class="rounded-full px-2.5 py-2 text-sm whitespace-nowrap text-muted transition-colors hover:text-fg aria-[current=page]:font-medium aria-[current=page]:text-fg"
               aria-current={l.current ? 'page' : undefined}
             >
               {l.label}
@@ -37,42 +46,142 @@ const links = [
           </li>
         ))
       }
-      <li class="group relative">
-        <button
-          type="button"
-          class="flex items-center gap-1 rounded-full px-3 py-2 text-sm text-muted transition-colors group-focus-within:text-fg group-hover:text-fg lg:px-3.5"
-          aria-haspopup="true"
-        >
-          Tools<Icon name="ChevronDown" class="size-3.5 transition-transform group-focus-within:rotate-180 group-hover:rotate-180" />
-        </button>
-        <div class="invisible absolute top-full left-1/2 w-80 -translate-x-1/2 pt-2 opacity-0 transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
-          <ul class="rounded-2xl border border-line bg-white p-1.5 shadow-[0_20px_50px_-20px_rgb(17_17_40/0.35)]">
-            {
-              tools.map((p) => (
-                <li>
-                  <a href={p.href} target="_blank" rel="noopener" class="flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-surface-2 focus-visible:bg-surface-2">
-                    <Image src={p.icon} alt="" width={32} height={32} class="size-8 flex-none rounded-lg border border-line" />
-                    <span class="min-w-0">
-                      <span class="block text-sm font-medium text-fg">{p.name}</span>
-                      <span class="block truncate text-xs text-muted">{p.text}</span>
-                    </span>
-                  </a>
-                </li>
-              ))
-            }
-          </ul>
-        </div>
-      </li>
       {
         site.repoUrl && (
           <li>
-            <a href={site.repoUrl} class="rounded-full px-3 py-2 text-sm text-muted transition-colors hover:text-fg" rel="noopener">
-              Source
+            <a
+              href={site.repoUrl}
+              class="grid size-9 place-items-center rounded-full text-muted transition-colors hover:text-fg"
+              rel="noopener"
+              aria-label={t.source}
+              title={t.source}
+            >
+              <Icon name="CodeXml" class="size-[1.125rem]" />
             </a>
           </li>
         )
       }
     </ul>
-    <a href={installHref} class="btn btn-ghost btn-sm"><Icon name="Download" />Install</a>
+
+    <div class="flex flex-none items-center gap-2">
+      <!-- Tools: a highlighted pill from md up (below md the menu panel lists them). -->
+      <div class="nav-dd group relative hidden md:block" data-dropdown>
+        <button type="button" class="tools-pill" aria-expanded="false" aria-controls="nav-tools">
+          <span class="flex -space-x-1.5" aria-hidden="true">
+            {tools.slice(0, 3).map((p) => <Image src={p.icon} alt="" loading="eager" width={20} height={20} class="size-5 rounded-md ring-2 ring-white" />)}
+          </span>
+          {t.tools}
+          <Icon name="ChevronDown" class="size-3.5 text-muted transition-transform group-hover:rotate-180 group-data-open:rotate-180" />
+        </button>
+        <div
+          id="nav-tools"
+          class="nav-dd-panel invisible absolute top-full right-0 w-80 pt-2 opacity-0 transition-[opacity,visibility] duration-150 group-hover:visible group-hover:opacity-100 group-data-open:visible group-data-open:opacity-100"
+        >
+          <div class="rounded-2xl border border-line bg-white p-1.5 shadow-[0_20px_50px_-20px_rgb(17_17_40/0.35)]">
+            <p class="px-2 pt-1.5 pb-1 text-[0.6875rem] font-medium tracking-[0.14em] text-accent uppercase">{t.moreTools}</p>
+            <ul>
+              {
+                tools.map((p) => (
+                  <li>
+                    <a href={p.href} target="_blank" rel="noopener" class="group/item flex items-center gap-3 rounded-xl p-2 transition-colors hover:bg-surface-2 focus-visible:bg-surface-2">
+                      <Image src={p.icon} alt="" loading="eager" width={32} height={32} class="size-8 flex-none rounded-lg border border-line" />
+                      <span class="min-w-0 flex-1">
+                        <span class="block text-sm font-medium text-fg">{p.name}</span>
+                        <span class="block truncate text-xs text-muted">{p.text[locale]}</span>
+                      </span>
+                      <Icon name="ArrowUpRight" class="size-4 flex-none text-muted opacity-0 transition-opacity group-hover/item:opacity-100" />
+                    </a>
+                  </li>
+                ))
+              }
+            </ul>
+          </div>
+        </div>
+      </div>
+      <div class="lang-switch hidden md:flex" role="group" aria-label={t.language}>
+        {
+          languages.map((l) => (
+            <a href={l.href} hreflang={l.lang} lang={l.lang} aria-label={l.name} aria-current={l.current ? 'true' : undefined} data-lang-link>
+              {l.label}
+            </a>
+          ))
+        }
+      </div>
+      <a href={installHref(locale)} class="btn btn-ghost btn-sm px-3.5 min-[360px]:px-4"><Icon name="Download" class="hidden min-[360px]:block" />{t.install}</a>
+      <button
+        type="button"
+        class="menu-btn js-only group xl:hidden"
+        aria-expanded="false"
+        aria-controls="site-menu"
+        aria-label={t.openMenu}
+        data-label-open={t.openMenu}
+        data-label-close={t.closeMenu}
+        data-menu-toggle
+      >
+        <Icon name="Menu" class="size-5 group-aria-expanded:hidden" />
+        <Icon name="X" class="hidden size-5 group-aria-expanded:block" />
+      </button>
+    </div>
   </nav>
+
+  <!-- Menu panel below xl: overlays the page (the header is fixed), so opening it never shifts layout. -->
+  <div id="site-menu" class="site-menu xl:hidden" hidden data-menu>
+    <div class="container-page max-h-[calc(100dvh-4rem)] overflow-y-auto overscroll-contain pt-2 pb-5 sm:max-h-[calc(100dvh-4.5rem)]">
+      <ul class="grid gap-0.5">
+        {
+          links.map((l) => (
+            <li>
+              <a href={l.href} class="menu-link" aria-current={l.current ? 'page' : undefined}>
+                {l.label}
+              </a>
+            </li>
+          ))
+        }
+        {
+          site.repoUrl && (
+            <li>
+              <a href={site.repoUrl} class="menu-link" rel="noopener">
+                {t.source}
+                <Icon name="ArrowUpRight" class="size-4 text-muted" />
+              </a>
+            </li>
+          )
+        }
+      </ul>
+
+      <p class="mt-4 border-t border-line px-3 pt-4 text-xs font-medium tracking-[0.14em] text-accent uppercase">{t.moreTools}</p>
+      <ul class="mt-2 grid gap-1.5 sm:grid-cols-2 lg:grid-cols-3">
+        {
+          tools.map((p) => (
+            <li>
+              <a href={p.href} target="_blank" rel="noopener" class="flex min-h-12 items-center gap-3 rounded-xl border border-accent/15 bg-white px-3 py-2 transition-colors hover:border-accent/40">
+                <Image src={p.icon} alt="" loading="eager" width={28} height={28} class="size-7 flex-none rounded-lg border border-line" />
+                <span class="min-w-0">
+                  <span class="block text-sm font-medium text-fg">{p.name}</span>
+                  <span class="block text-xs leading-snug text-muted">{p.text[locale]}</span>
+                </span>
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+
+      <div class="mt-4 flex items-center justify-between gap-3 border-t border-line px-3 pt-4 md:hidden">
+        <p class="text-sm text-muted" id="menu-lang-label">{t.language}</p>
+        <div class="lang-switch lang-switch-lg" role="group" aria-labelledby="menu-lang-label">
+          {
+            languages.map((l) => (
+              <a href={l.href} hreflang={l.lang} lang={l.lang} aria-label={l.name} aria-current={l.current ? 'true' : undefined} data-lang-link>
+                {l.label}
+              </a>
+            ))
+          }
+        </div>
+      </div>
+    </div>
+  </div>
 </header>
+
+<script>
+  import '../scripts/nav';
+</script>

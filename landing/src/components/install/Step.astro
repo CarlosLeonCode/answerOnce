@@ -1,5 +1,6 @@
 ---
 import Icon from '../Icon.astro';
+import { fmt, toLocale, useStrings } from '../../i18n';
 
 interface Props {
   n: number;
@@ -7,6 +8,7 @@ interface Props {
   optional?: boolean;
 }
 const { n, title, optional = false } = Astro.props;
+const t = useStrings(toLocale(Astro.currentLocale)).guide;
 ---
 
 <li id={`step-${n}`} class="step card" data-step={n} aria-labelledby={`step-${n}-title`}>
@@ -17,17 +19,17 @@ const { n, title, optional = false } = Astro.props;
         <Icon name="Check" class="step-num-check size-4" strokeWidth={3} />
       </span>
       <h3 id={`step-${n}-title`} class="text-[1.0625rem] font-medium tracking-tight">
-        <span class="sr-only">Step {n}: </span>{title}
+        <span class="sr-only">{fmt(t.step, { n })}: </span>{title}
       </h3>
-      {optional && <span class="step-tag">Optional</span>}
-      <span class="step-tag step-tag-next js-only">Up next</span>
+      {optional && <span class="step-tag">{t.optional}</span>}
+      <span class="step-tag step-tag-next js-only">{t.next}</span>
     </div>
     <div class="step-body">
       <slot />
     </div>
     <label class="step-done js-only">
       <input type="checkbox" data-step-done={n} />
-      <span>Done</span><span class="sr-only">: {title}</span>
+      <span>{t.done}</span><span class="sr-only">: {title}</span>
     </label>
   </div>
   <div class="step-mock" aria-hidden="true">
