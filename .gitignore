@@ -26,3 +26,7 @@ landing/.astro
 
 # Install-page downloads, copied from the extension build (pnpm landing:downloads)
 landing/public/downloads/
+
+# Product video renders and their temporary files (node video/render.mjs)
+video/out/
+video/.build/

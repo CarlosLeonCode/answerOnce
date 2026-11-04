@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AnswerOnce video</title>
+<!--
+  1920×1080 composition for the AnswerOnce product video, driven by one GSAP
+  timeline. Served from the repo root by video/render.mjs (or any static
+  server): /video/composition/index.html?lang=en|es
+  Without ?render the timeline plays in real time, scaled to the window.
+-->
+<link rel="stylesheet" href="composition.css">
+<script src="/landing/node_modules/gsap/dist/gsap.min.js"></script>
+<script type="module" src="composition.js"></script>
+</head>
+<body>
+<div id="viewport"><div id="stage"></div></div>
+</body>
+</html>

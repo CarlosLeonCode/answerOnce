@@ -1,0 +1,162 @@
+{
+  "import-review": {
+    "table": {
+      "x": 346,
+      "y": 281,
+      "width": 840,
+      "height": 525
+    },
+    "save": {
+      "x": 944,
+      "y": 795,
+      "width": 229,
+      "height": 36
+    },
+    "banner": {
+      "x": 387,
+      "y": 171,
+      "width": 690,
+      "height": 20
+    }
+  },
+  "job": {
+    "form": {
+      "x": 32,
+      "y": 331,
+      "width": 756,
+      "height": 676
+    },
+    "first": {
+      "x": 32,
+      "y": 358,
+      "width": 370,
+      "height": 40
+    },
+    "resume": {
+      "x": 43,
+      "y": 696,
+      "width": 295,
+      "height": 32
+    },
+    "workAuth": {
+      "x": 32,
+      "y": 781,
+      "width": 756,
+      "height": 40
+    }
+  },
+  "overlay-before": {
+    "overlay": {
+      "x": 866,
+      "y": 12,
+      "width": 402,
+      "height": 722
+    },
+    "fill": {
+      "x": 896,
+      "y": 293,
+      "width": 342,
+      "height": 44
+    }
+  },
+  "overlay-after": {
+    "results": {
+      "x": 881,
+      "y": 575,
+      "width": 52,
+      "height": 20
+    },
+    "application": {
+      "x": 881,
+      "y": 421,
+      "width": 372,
+      "height": 140
+    }
+  },
+  "overlay-question": {
+    "answer": {
+      "x": 894,
+      "y": 307,
+      "width": 346,
+      "height": 96
+    },
+    "generate": {
+      "x": 894,
+      "y": 413,
+      "width": 145,
+      "height": 30
+    }
+  },
+  "overlay-draft": {
+    "answer": {
+      "x": 894,
+      "y": 279,
+      "width": 346,
+      "height": 96
+    },
+    "generate": {
+      "x": 894,
+      "y": 385,
+      "width": 145,
+      "height": 30
+    },
+    "insert": {
+      "x": 1045,
+      "y": 385,
+      "width": 139,
+      "height": 30
+    }
+  },
+  "overlay-inserted": {
+    "why": {
+      "x": 32,
+      "y": 569,
+      "width": 756,
+      "height": 96
+    },
+    "consent": {
+      "x": 32,
+      "y": 685,
+      "width": 756,
+      "height": 22
+    },
+    "submit": {
+      "x": 32,
+      "y": 735,
+      "width": 178,
+      "height": 45
+    }
+  },
+  "panel-already-applied": {
+    "warning": {
+      "x": 14,
+      "y": 228,
+      "width": 372,
+      "height": 69
+    }
+  },
+  "applications": {
+    "list": {
+      "x": 367,
+      "y": 264,
+      "width": 798,
+      "height": 306
+    }
+  },
+  "overview-proposal": {
+    "banner": {
+      "x": 346,
+      "y": 116,
+      "width": 840,
+      "height": 107
+    }
+  },
+  "proposal-review": {
+    "accept": {
+      "x": 1000,
+      "y": 641,
+      "width": 173,
+      "height": 36
+    }
+  }
+}
