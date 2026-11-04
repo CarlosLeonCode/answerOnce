@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+set -e
+echo "Running CLC Kernel Safeguards..."
+
+# Guards: the audit orchestrators run every guard in tools/ once (kernel and project guards).
+[ -f tools/audit.js ] || [ -f tools/audit.py ] || { echo "clckernel: no audit orchestrator in tools/" >&2; exit 1; }
+if [ -f tools/audit.js ]; then node tools/audit.js --hook; fi
+if [ -f tools/audit.py ]; then python3 tools/audit.py --hook; fi

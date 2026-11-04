@@ -1,0 +1,2 @@
+# CLC Kernel: defaults accepted. Add keys only for settings that differ.
+# Project guards (privacy, SEO/GEO, mobile-first) live in tools/guards/.

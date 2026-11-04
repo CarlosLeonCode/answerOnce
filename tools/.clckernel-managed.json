@@ -1,0 +1,81 @@
+{
+  "kernelVersion": "2.0.4",
+  "files": [
+    {
+      "path": ".agents/skills/clckernel_cli/SKILL.md",
+      "sha256": "d0f2ec2121faba9c36d7a6891ce6c1f8ad1b8c182e27914b8f021198f1543cbb"
+    },
+    {
+      "path": ".agents/skills/clckernel_cli/reference/audit.md",
+      "sha256": "0731141e971654d55c6381d04c687b1158ba8597abaa6eb008ca965c1f6d6e86"
+    },
+    {
+      "path": ".agents/skills/clckernel_cli/reference/commit.md",
+      "sha256": "624929bca33753d9680cf9eb4b91f679c644e37dd552e596558a8824cc810cf0"
+    },
+    {
+      "path": ".agents/skills/clckernel_cli/reference/doctor.md",
+      "sha256": "783e72fc87e29d22c32c921fd8288f2f10f933edde55a6ce1294fb66b1821437"
+    },
+    {
+      "path": ".agents/skills/clckernel_cli/reference/feature.md",
+      "sha256": "ae1ea7748e897027047fec55a5fa3de48e6bd9f4c26f7a79c15e5779ebce5841"
+    },
+    {
+      "path": ".agents/skills/clckernel_cli/reference/fix.md",
+      "sha256": "ee317b5bde558d2de95c22248c026bdcbe4ee9ea744f783e058e11b5959848a6"
+    },
+    {
+      "path": ".agents/skills/clckernel_cli/reference/guard.md",
+      "sha256": "53f89ef88e7ecd1c185a5a0d9336205adb56fd3f53002efb6615867c831e511c"
+    },
+    {
+      "path": ".agents/skills/clckernel_cli/reference/phase.md",
+      "sha256": "ace0864b562fcec6fc5be0d6caf5e30f2c886fa9bdbbb8c25d10c4ba4628b561"
+    },
+    {
+      "path": ".agents/skills/clckernel_cli/reference/report-bug.md",
+      "sha256": "3ae64e13277cea1a1384b9288990ab2ae243a0825c4d23d30f6460d51ba2fe95"
+    },
+    {
+      "path": ".agents/skills/clckernel_cli/reference/start.md",
+      "sha256": "bd64cc575afe52f17d55f825d7a0e8e3d4b995a9806f5dea91cefa7c7340a826"
+    },
+    {
+      "path": ".agents/skills/clckernel_cli/reference/test.md",
+      "sha256": "c3015fc566c45135abc5ff20da5b3860ea511b5e819ca7bf15f20663bf63d264"
+    },
+    {
+      "path": ".agents/skills/clckernel_cli/reference/update.md",
+      "sha256": "f59430c1a65fcefcb4a2a313224fe26b96b75d30cc3a2b50906d92100d112b83"
+    },
+    {
+      "path": ".githooks/pre-commit",
+      "sha256": "72401c9ff28de5261792eea8c31f614f20276d47bf3bb242e84e4e67100d19c6"
+    },
+    {
+      "path": "tools/_changes.js",
+      "sha256": "e83a1843ac4720a15315f6a35914a65c33ce064a8aef7956b69b34e23ddd5606"
+    },
+    {
+      "path": "tools/_config.js",
+      "sha256": "e7a11c374ff29cb66a45b57635491522b47c0b7dce278201348e4fa528fadf69"
+    },
+    {
+      "path": "tools/audit.js",
+      "sha256": "679f17716181253043dbca648f15dbd0c146b149c834f53dc7aaa16879d96201"
+    },
+    {
+      "path": "tools/package.json",
+      "sha256": "8005a3491db7d92f36ac66369861589f9c47123d3a7c71e643fc2c06168cd45a"
+    },
+    {
+      "path": "tools/scan_secrets.js",
+      "sha256": "9b7ce3593adf5a378e8913ef39c3c97ceeb6fc07c2da4f4df447165451c00415"
+    },
+    {
+      "path": "tools/yaml.js",
+      "sha256": "dedae1dcfc902c83c1321b5775b6f367164f5cd2b9e3835d1575462a1098f017"
+    }
+  ]
+}
