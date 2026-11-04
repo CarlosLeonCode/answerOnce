@@ -1,0 +1,11 @@
+# Netlify deploy for the landing site. Keep the site's "Base directory" empty: the build runs from
+# the repo root because the install page ships the extension zip and the Claude Desktop bundle,
+# which are built from the root project (pnpm landing:build). Node comes from .nvmrc.
+[build]
+  command = "pnpm --dir landing install --frozen-lockfile && pnpm landing:build"
+  publish = "landing/dist"
+
+[[headers]]
+  for = "/downloads/*"
+  [headers.values]
+    Content-Disposition = "attachment"
