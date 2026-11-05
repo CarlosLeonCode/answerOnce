@@ -57,7 +57,10 @@ function setBrowser(id: BrowserId, auto: boolean) {
     urlCopy.setAttribute('aria-label', say('copyAddress', { url: b.extensionsUrl }));
   }
   if (hint) hint.textContent = say(auto ? 'detected' : 'chosen', { name: b.name });
+  onBrowser();
 }
+// Re-renders the progress once the steps below are wired up (some steps only show in one browser).
+let onBrowser = () => {};
 
 const initial = isBrowserId(root.dataset.browser) ? root.dataset.browser : 'chrome';
 setBrowser(initial, root.hasAttribute('data-browser-auto'));
@@ -96,7 +99,6 @@ if (envNote && envText && (mobile || !chromium)) {
 
 // ---------- Steps and progress ----------
 const steps = [...document.querySelectorAll<HTMLLIElement>('[data-step]')];
-const total = steps.length;
 const boxes = steps.map((li) => li.querySelector<HTMLInputElement>('[data-step-done]')!);
 const bar = document.querySelector<HTMLElement>('[data-progress]');
 const fill = document.querySelector<HTMLElement>('[data-progress-fill]');
@@ -105,9 +107,14 @@ const announce = document.querySelector<HTMLElement>('[data-announce]');
 const index = [...document.querySelectorAll<HTMLAnchorElement>('[data-index]')];
 const finish = document.querySelector<HTMLElement>('[data-finish]');
 
+// Steps for other browsers (<li data-for>) are hidden and left out of the count.
+const shown = (el: HTMLElement) => !el.dataset.for || el.dataset.for.split(' ').includes(root.dataset.browser ?? 'chrome');
+
 function render() {
   const done = new Set(state.done);
-  const current = steps.find((li) => !done.has(Number(li.dataset.step)));
+  const visible = steps.filter(shown);
+  const total = visible.length;
+  const current = visible.find((li) => !done.has(Number(li.dataset.step)));
   steps.forEach((li, i) => {
     const n = Number(li.dataset.step);
     li.dataset.state = done.has(n) ? 'done' : li === current ? 'current' : 'todo';
@@ -119,7 +126,7 @@ function render() {
     if (a.dataset.state === 'current') a.setAttribute('aria-current', 'step');
     else a.removeAttribute('aria-current');
   }
-  const count = steps.filter((li) => done.has(Number(li.dataset.step))).length;
+  const count = visible.filter((li) => done.has(Number(li.dataset.step))).length;
   if (bar) {
     bar.setAttribute('aria-valuenow', String(count));
     bar.setAttribute('aria-valuetext', say('countLong', { n: count, total }));
@@ -139,8 +146,9 @@ boxes.forEach((box, i) => {
     save(state);
     render();
     if (announce) {
-      const count = state.done.length;
-      announce.textContent = count === total ? say('allDone') : say('announce', { n: count, total });
+      const visible = steps.filter(shown);
+      const count = visible.filter((li) => done.has(Number(li.dataset.step))).length;
+      announce.textContent = count === visible.length ? say('allDone') : say('announce', { n: count, total: visible.length });
     }
   });
 });
@@ -152,6 +160,7 @@ document.querySelector('[data-reset]')?.addEventListener('click', () => {
   if (announce) announce.textContent = say('cleared');
 });
 
+onBrowser = render;
 render();
 
 // Links to a closed <details> (e.g. #build-from-source) open it.

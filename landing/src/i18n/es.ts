@@ -267,6 +267,11 @@ export const es: Strings = {
         note: '',
       },
       {
+        title: 'Activa el acceso a carpetas',
+        body: 'Brave bloquea de forma predeterminada el acceso a carpetas para las extensiones, y AnswerOnce guarda tu perfil en una carpeta. Abre una pestaña nueva, pega `brave://flags` y pulsa Enter. Busca **File System Access API**, ponlo en **Enabled** y haz clic en **Relaunch**.',
+        note: 'Si te saltas este paso, **Choose folder…** falla con «window.showDirectoryPicker is not a function». Solo funciona en escritorio.',
+      },
+      {
         title: 'Crea tu perfil',
         body: [
           'Haz clic en el icono de AnswerOnce, luego en ',
@@ -276,7 +281,6 @@ export const es: Strings = {
         note: [
           { b: 'chrome edge brave', t: 'AnswerOnce se abre en el panel lateral del navegador. ' },
           { b: 'arc', t: 'En Arc, AnswerOnce se abre como un panel flotante dentro de la página. ' },
-          { b: 'brave', t: 'Brave bloquea el acceso a carpetas de forma predeterminada; consulta la sección de solución de problemas más abajo. ' },
           'También puedes omitir la importación y completar tu perfil a mano.',
         ],
       },
@@ -313,8 +317,8 @@ export const es: Strings = {
           a: 'Arc no tiene panel lateral para extensiones, así que AnswerOnce se abre como un panel flotante dentro de la página en la que estás. Todo lo demás funciona igual.',
         },
         {
-          q: 'Brave dice que no puede abrir una carpeta',
-          a: 'Brave desactiva el acceso a carpetas para sitios web y extensiones de forma predeterminada. Abre brave://flags, busca «File System Access», actívalo y reinicia Brave.',
+          q: 'Brave dice «window.showDirectoryPicker is not a function»',
+          a: 'Brave desactiva el acceso a carpetas para sitios web y extensiones de forma predeterminada. Abre brave://flags, busca «File System Access API», ponlo en Enabled y haz clic en Relaunch. Luego vuelve a hacer clic en Choose folder…. Solo funciona en escritorio.',
         },
       ],
       ollamaQ: '¿Usas Ollama para IA local?',
@@ -325,7 +329,12 @@ export const es: Strings = {
       buildQ: '¿Prefieres compilarlo desde el código fuente?',
       buildBefore: 'Clona',
       buildLink: 'el código fuente',
-      buildAfter: '(Node 24+, pnpm 10) y compílalo. Luego sigue los pasos 3 a 7 y selecciona la carpeta `.output/chrome-mv3` en el paso 5.',
+      buildAfter: [
+        '(Node 24+, pnpm 10) y compílalo. Luego sigue los pasos 3 a ',
+        { b: 'chrome arc edge', t: '7' },
+        { b: 'brave', t: '8' },
+        ' y selecciona la carpeta `.output/chrome-mv3` en el paso 5.',
+      ],
     },
     mock: { doubleClick: 'doble clic', open: 'abrir' },
     script: {

@@ -270,6 +270,13 @@ export const en = {
         note: rich(''),
       },
       {
+        title: 'Turn on folder access',
+        body: rich(
+          'Brave blocks folder access for extensions by default, and AnswerOnce keeps your profile in a folder. Open a new tab, paste `brave://flags` and press Enter. Search for **File System Access API**, set it to **Enabled** and click **Relaunch**.',
+        ),
+        note: rich('Skip this and **Choose folder…** fails with “window.showDirectoryPicker is not a function”. It works on desktop only.'),
+      },
+      {
         title: 'Create your profile',
         body: rich([
           'Click the AnswerOnce icon, then ',
@@ -279,7 +286,6 @@ export const en = {
         note: rich([
           { b: 'chrome edge brave', t: 'AnswerOnce opens in the browser’s side panel. ' },
           { b: 'arc', t: 'In Arc, AnswerOnce opens as a floating panel inside the page. ' },
-          { b: 'brave', t: 'Brave blocks folder access by default; see the troubleshooting section below. ' },
           'You can also skip the import and fill your profile by hand.',
         ]),
       },
@@ -318,8 +324,8 @@ export const en = {
           a: 'Arc has no side panel for extensions, so AnswerOnce opens as a floating panel inside the page you are on. Everything else works the same.',
         },
         {
-          q: 'Brave says it can’t open a folder',
-          a: 'Brave turns off folder access for websites and extensions by default. Open brave://flags, search for “File System Access”, enable it and relaunch Brave.',
+          q: 'Brave says “window.showDirectoryPicker is not a function”',
+          a: 'Brave turns off folder access for websites and extensions by default. Open brave://flags, search for “File System Access API”, set it to Enabled and click Relaunch. Then click Choose folder… again. This works on desktop only.',
         },
       ],
       ollamaQ: 'Using Ollama for local AI?',
@@ -331,7 +337,12 @@ export const en = {
       buildQ: 'Prefer to build from source?',
       buildBefore: 'Clone',
       buildLink: 'the source code',
-      buildAfter: rich('(Node 24+, pnpm 10) and build it. Then follow steps 3 to 7 and select the `.output/chrome-mv3` folder in step 5.'),
+      buildAfter: rich([
+        '(Node 24+, pnpm 10) and build it. Then follow steps 3 to ',
+        { b: 'chrome arc edge', t: '7' },
+        { b: 'brave', t: '8' },
+        ' and select the `.output/chrome-mv3` folder in step 5.',
+      ]),
     },
     mock: { doubleClick: 'double-click', open: 'open' },
     /** Strings the guide's script writes at runtime ({name}, {n}, {total} are filled in there). */

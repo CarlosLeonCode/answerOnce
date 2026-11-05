@@ -10,7 +10,7 @@ import { downloads } from '../../downloads';
 import { toLocale, useStrings } from '../../i18n';
 
 interface Props {
-  kind: 'download' | 'unzip' | 'open' | 'devmode' | 'load' | 'pin' | 'firstrun' | 'claude';
+  kind: 'download' | 'unzip' | 'open' | 'devmode' | 'load' | 'pin' | 'flags' | 'firstrun' | 'claude';
 }
 const { kind } = Astro.props;
 // Mock UI labels stay in English (the browser and extension UI); only the hand-drawn annotations are translated.
@@ -209,6 +209,37 @@ const url = browsers.map((b) => ({ b: b.id, text: b.extensionsUrl }));
             <span class="flex-1">Another extension</span>
             <span class="mk-pin"><Icon name="Pin" class="size-3.5" /></span>
           </div>
+        </div>
+      </div>
+    </div>
+  )
+}
+
+{
+  kind === 'flags' && (
+    <div class="mk-win">
+      <div class="mk-bar">
+        <span class="mk-dots"><i /><i /><i /></span>
+        <span class="mk-url">brave://flags</span>
+      </div>
+      <div class="mk-body mk-page">
+        <span class="mk-search">
+          <Icon name="Search" class="size-3" />
+          File System Access API
+        </span>
+        <div class="mk-flag mk-ring">
+          <span class="grid min-w-0 flex-1 gap-1.5">
+            <span class="mk-strong truncate">File System Access API</span>
+            <span class="mk-line w-3/4" />
+          </span>
+          <span class="mk-select">
+            Enabled
+            <Icon name="ChevronDown" class="size-3" />
+          </span>
+        </div>
+        <div class="mk-flag-foot">
+          <span class="mk-line w-1/2" />
+          <span class="mk-btn mk-btn-primary">Relaunch</span>
         </div>
       </div>
     </div>

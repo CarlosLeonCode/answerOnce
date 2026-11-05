@@ -1,25 +1,32 @@
 ---
 import Icon from '../Icon.astro';
+import For from './For.astro';
 import { fmt, toLocale, useStrings } from '../../i18n';
 
 interface Props {
+  /** Stable id: anchor (#step-n) and saved progress. */
   n: number;
+  /** Number shown to each group of browsers, e.g. [{ n: 7, b: 'chrome arc edge' }, { n: 8, b: 'brave' }]. */
+  nums: { n: number; b: string }[];
+  /** Browsers that get this step; all of them when omitted. */
+  only?: string;
   title: string;
   optional?: boolean;
 }
-const { n, title, optional = false } = Astro.props;
+const { n, nums, only, title, optional = false } = Astro.props;
+const single = nums.length === 1 ? nums[0].n : undefined;
 const t = useStrings(toLocale(Astro.currentLocale)).guide;
 ---
 
-<li id={`step-${n}`} class="step card" data-step={n} aria-labelledby={`step-${n}-title`}>
+<li id={`step-${n}`} class="step card" data-step={n} data-for={only} aria-labelledby={`step-${n}-title`}>
   <div class="step-text">
     <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
       <span class="step-num" aria-hidden="true">
-        <span class="step-num-n">{n}</span>
+        <span class="step-num-n">{single ?? nums.map((x) => <For b={x.b}>{x.n}</For>)}</span>
         <Icon name="Check" class="step-num-check size-4" strokeWidth={3} />
       </span>
       <h3 id={`step-${n}-title`} class="text-[1.0625rem] font-medium tracking-tight">
-        <span class="sr-only">{fmt(t.step, { n })}: </span>{title}
+        <span class="sr-only">{single ? fmt(t.step, { n: single }) : nums.map((x) => <For b={x.b}>{fmt(t.step, { n: x.n })}</For>)}: </span>{title}
       </h3>
       {optional && <span class="step-tag">{t.optional}</span>}
       <span class="step-tag step-tag-next js-only">{t.next}</span>

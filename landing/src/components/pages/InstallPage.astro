@@ -19,9 +19,32 @@ const t = s.guide;
 const zip = downloads.extension;
 const mcpb = downloads.mcpb;
 const steps = t.steps;
-const TOTAL = steps.length;
+// One per step, in order: picks the mock and the extras a step gets.
+const kinds = ['download', 'unzip', 'open', 'devmode', 'load', 'pin', 'flags', 'firstrun', 'claude'] as const;
+type Kind = (typeof kinds)[number];
+// Steps only some browsers need; the others skip them, numbering included.
+const only: Partial<Record<Kind, string>> = { flags: 'brave' };
+const shows = (k: Kind, b: string) => !only[k] || only[k].split(' ').includes(b);
+// Stable ids for anchors and saved progress: shared steps keep 1..n, browser-only steps come after them.
+const shared = kinds.filter((k) => !only[k]);
+const extra = kinds.filter((k) => only[k]);
+const ids = kinds.map((k) => (only[k] ? shared.length + 1 + extra.indexOf(k) : shared.indexOf(k) + 1));
+// The number each browser sees for a step, grouped: [{ n: 7, b: 'chrome arc edge' }, { n: 8, b: 'brave' }].
+const nums = kinds.map((k, i) => {
+  const groups = new Map<number, string[]>();
+  for (const { id: b } of browsers) {
+    if (!shows(k, b)) continue;
+    const n = kinds.slice(0, i + 1).filter((x) => shows(x, b)).length;
+    groups.set(n, [...(groups.get(n) ?? []), b]);
+  }
+  return [...groups].map(([n, bs]) => ({ n, b: bs.join(' ') }));
+});
+const TOTAL = kinds.filter((k) => shows(k, 'chrome')).length;
 // Values the step texts can use as {file} and {size}.
-const vars = [{ file: zip.file, size: zip.size && ` (${zip.size})` }, {}, {}, {}, {}, {}, {}, { file: mcpb.file }];
+const vars: Partial<Record<Kind, Record<string, string>>> = {
+  download: { file: zip.file, size: zip.size && ` (${zip.size})` },
+  claude: { file: mcpb.file },
+};
 const summaryClass =
   'flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 font-medium transition-colors hover:bg-surface-2 sm:px-6 [&::-webkit-details-marker]:hidden';
 // Runtime strings for scripts/install.ts (escaped for an inline JSON script).
@@ -168,8 +191,8 @@ const scriptStrings = JSON.stringify({ ...t.script, copyAddress: s.code.copyAddr
               <ol class="guide-index mt-4">
                 {
                   steps.map((st, i) => (
-                    <li>
-                      <a href={`#step-${i + 1}`} data-index={i + 1}>
+                    <li data-for={only[kinds[i]]}>
+                      <a href={`#step-${ids[i]}`} data-index={ids[i]}>
                         <span class="guide-dot" aria-hidden="true" />
                         {st.title}
                       </a>
@@ -194,17 +217,17 @@ const scriptStrings = JSON.stringify({ ...t.script, copyAddress: s.code.copyAddr
           <ol class="steps-list">
             {
               steps.map((st, i) => {
-                const n = i + 1;
+                const kind = kinds[i];
                 return (
-                  <Step n={n} title={st.title} optional={n === 8}>
-                    <Rich text={st.body} vars={vars[i]} />
-                    {n === 1 && (
+                  <Step n={ids[i]} nums={nums[i]} only={only[kind]} title={st.title} optional={kind === 'claude'}>
+                    <Rich text={st.body} vars={vars[kind]} />
+                    {kind === 'download' && (
                       <a href={zip.href} download={zip.file} class="btn btn-ghost btn-sm mt-1">
                         <Icon name="Download" />
                         {fmt(t.downloadFile, { file: zip.file })}
                       </a>
                     )}
-                    {n === 3 && (
+                    {kind === 'open' && (
                       <div class="url-box">
                         <code class="url-text">
                           {browsers.map((b) => (
@@ -227,15 +250,15 @@ const scriptStrings = JSON.stringify({ ...t.script, copyAddress: s.code.copyAddr
                         </button>
                       </div>
                     )}
-                    {n === 8 && (
+                    {kind === 'claude' && (
                       <a href={mcpb.href} download={mcpb.file} class="btn btn-ghost btn-sm mt-1">
                         <Icon name="Download" />
                         {fmt(t.downloadFile, { file: mcpb.file })}
                         {mcpb.size && ` (${mcpb.size})`}
                       </a>
                     )}
-                    {st.note && <Rich text={st.note} vars={vars[i]} class="step-note" />}
-                    <Mock slot="mock" kind={(['download', 'unzip', 'open', 'devmode', 'load', 'pin', 'firstrun', 'claude'] as const)[i]} />
+                    {st.note && <Rich text={st.note} vars={vars[kind]} class="step-note" />}
+                    <Mock slot="mock" kind={kind} />
                   </Step>
                 );
               })
